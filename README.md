@@ -12,8 +12,8 @@
 api:
   host: "127.0.0.1"
   port: 8080
-  program_key: "ProgAuthDevKey"
-  admin_key: "AdminAuthDevKey"
+  program_key: "ProgAuthKey"
+  admin_key: "AdminAuthKey"
   read_time_out: 40
   write_time_out: 20
   read_head_time_out: 50
@@ -25,4 +25,17 @@ db:
   password: "devUserPassword"
   dbname: "faceid"
   ssl_mode: false
+```
+
+Run application:
+```shell
+make run
+```
+
+For more details see:
+
+```shell
+make
+# or
+make help
 ```
