@@ -1,0 +1,24 @@
+basePath: /
+info:
+  contact:
+    email: stas@kuznec.team
+    name: API Support
+  description: Swagger API for Golang Project Blueprint.
+  termsOfService: https://swagger.io/terms/
+  title: Swagger API
+  version: "1.0"
+paths:
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: health check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: health check
+      tags:
+      - Public API
+swagger: "2.0"

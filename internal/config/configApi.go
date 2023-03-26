@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-type Api struct {
+type API struct {
 	apiHost            string
 	apiPort            int
 	apiProgramKey      string
@@ -15,62 +15,66 @@ type Api struct {
 	apiReadHeadTimeOut int
 }
 
-func (c *Config) ConfigApi() error {
-	c.apiHost = viper.GetString("api.host")
-	if c.apiHost == "" {
-		c.apiHost = "127.0.0.1"
+func (a *API) ConfigAAPI() error {
+	a.apiHost = viper.GetString("api.host")
+	if a.apiHost == "" {
+		a.apiHost = "127.0.0.1"
 	}
-	c.apiPort = viper.GetInt("api.port")
-	if c.apiPort == 0 {
-		c.apiPort = 8080
+	a.apiPort = viper.GetInt("api.port")
+	if a.apiPort == 0 {
+		a.apiPort = 8080
 	}
-	c.apiProgramKey = viper.GetString("api.program_key")
-	if c.apiProgramKey == "" {
+	a.apiProgramKey = viper.GetString("api.program_key")
+	if a.apiProgramKey == "" {
 		return fmt.Errorf("api.program_key not in config")
 	}
-	c.apiAdminKey = viper.GetString("api.admin_key")
-	if c.apiAdminKey == "" {
+	a.apiAdminKey = viper.GetString("api.admin_key")
+	if a.apiAdminKey == "" {
 		return fmt.Errorf("api.admin_key not in config")
 	}
-	c.apiReadTimeOut = viper.GetInt("api.read_time_out")
-	if c.apiReadTimeOut == 0 {
-		c.apiReadTimeOut = 30
+	a.apiReadTimeOut = viper.GetInt("api.read_time_out")
+	if a.apiReadTimeOut == 0 {
+		a.apiReadTimeOut = 30
 	}
-	c.apiWriteTimeOut = viper.GetInt("api.write_time_out")
-	if c.apiWriteTimeOut == 0 {
-		c.apiWriteTimeOut = 30
+	a.apiWriteTimeOut = viper.GetInt("api.write_time_out")
+	if a.apiWriteTimeOut == 0 {
+		a.apiWriteTimeOut = 30
 	}
-	c.apiReadHeadTimeOut = viper.GetInt("api.read_head_time_out")
-	if c.apiReadHeadTimeOut == 0 {
-		c.apiReadHeadTimeOut = 30
+	a.apiReadHeadTimeOut = viper.GetInt("api.read_head_time_out")
+	if a.apiReadHeadTimeOut == 0 {
+		a.apiReadHeadTimeOut = 30
 	}
 	return nil
 }
 
-func (c *Config) ApiHost() string {
-	return c.apiHost
+func (a *API) APIHost() string {
+	return a.apiHost
 }
 
-func (c *Config) ApiPort() int {
-	return c.apiPort
+func (a *API) APIPort() int {
+	return a.apiPort
 }
 
-func (c *Config) ApiProgramKey() string {
-	return c.apiProgramKey
+func (a *API) APIProgramKey() string {
+	return a.apiProgramKey
 }
 
-func (c *Config) ApiAdminKey() string {
-	return c.apiAdminKey
+func (a *API) APIAdminKey() string {
+	return a.apiAdminKey
 }
 
-func (c *Config) ApiReadTimeOut() int {
-	return c.apiReadTimeOut
+func (a *API) APIReadTimeOut() int {
+	return a.apiReadTimeOut
 }
 
-func (c *Config) ApiWriteTimeOut() int {
-	return c.apiWriteTimeOut
+func (a *API) APIWriteTimeOut() int {
+	return a.apiWriteTimeOut
 }
 
-func (c *Config) ApiReadHeadTimeOut() int {
-	return c.apiReadHeadTimeOut
+func (a *API) APIReadHeadTimeOut() int {
+	return a.apiReadHeadTimeOut
+}
+
+func (a *API) APIConfig() API {
+	return *a
 }

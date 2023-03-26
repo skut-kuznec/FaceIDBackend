@@ -14,4 +14,7 @@ db:
   password: "devUserPassword"
   dbname: "faceid"
   ssl_mode: false
-
+log:
+  level: "debug"
+  to_file: false
+  filename: "log/epg.log"

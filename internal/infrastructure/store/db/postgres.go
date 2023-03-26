@@ -9,31 +9,31 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type Users struct {
+type Store struct {
 	db *sqlx.DB
 }
 
-func (us *Users) Create(ctx context.Context, u interface{}) (interface{}, error) {
+func (us *Store) Create(ctx context.Context, u interface{}) (interface{}, error) {
 	// TODO implement me
 	panic("implement me")
 }
 
-func (us *Users) Read(ctx context.Context, u interface{}) (interface{}, error) {
+func (us *Store) Read(ctx context.Context, u interface{}) (interface{}, error) {
 	// TODO implement me
 	panic("implement me")
 }
 
-func (us *Users) Delete(ctx context.Context, u interface{}) error {
+func (us *Store) Update(ctx context.Context, u interface{}) (interface{}, error) {
 	// TODO implement me
 	panic("implement me")
 }
 
-func (us *Users) SearchUsers(ctx context.Context, u interface{}) (interface{}, error) {
+func (us *Store) Delete(ctx context.Context, u interface{}) error {
 	// TODO implement me
 	panic("implement me")
 }
 
-func NewPostgres(cfg config.DB) (*Users, error) {
+func NewPostgres(cfg config.DB) (*Store, error) {
 	log.Debug().Msgf("Configuring Postgres")
 	// dbase, err := sqlx.Open("postgres", dsn)
 	dbase, err := sqlx.Open("postgres", fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=%t",
@@ -60,7 +60,7 @@ func NewPostgres(cfg config.DB) (*Users, error) {
 		dbase.Close()
 		return nil, err
 	}
-	store := &Users{
+	store := &Store{
 		db: dbase,
 	}
 	return store, nil

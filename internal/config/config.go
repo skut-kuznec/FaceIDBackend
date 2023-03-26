@@ -5,8 +5,9 @@ import (
 )
 
 type Config struct {
-	Api
+	API
 	DB
+	Log
 }
 
 func NewConfig() (*Config, error) {
@@ -26,7 +27,11 @@ func (c *Config) ConfigFromViper() error {
 	if err != nil {
 		return err
 	}
-	err = c.ConfigApi()
+	err = c.ConfigureLog()
+	if err != nil {
+		return err
+	}
+	err = c.ConfigAAPI()
 	if err != nil {
 		return err
 	}

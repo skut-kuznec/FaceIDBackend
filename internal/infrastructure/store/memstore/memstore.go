@@ -21,12 +21,12 @@ func (s *Store) Read(ctx context.Context, u interface{}) (interface{}, error) {
 	panic("implement me")
 }
 
-func (s *Store) Delete(ctx context.Context, u interface{}) error {
+func (s *Store) Update(ctx context.Context, u interface{}) (interface{}, error) {
 	// TODO implement me
 	panic("implement me")
 }
 
-func (s *Store) SearchUsers(ctx context.Context, u interface{}) (interface{}, error) {
+func (s *Store) Delete(ctx context.Context, u interface{}) error {
 	// TODO implement me
 	panic("implement me")
 }

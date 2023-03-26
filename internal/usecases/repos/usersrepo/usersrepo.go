@@ -7,8 +7,8 @@ import (
 type UserStore interface {
 	Create(ctx context.Context, u interface{}) (interface{}, error)
 	Read(ctx context.Context, u interface{}) (interface{}, error)
+	Update(ctx context.Context, u interface{}) (interface{}, error)
 	Delete(ctx context.Context, u interface{}) error
-	SearchUsers(ctx context.Context, u interface{}) (interface{}, error)
 }
 
 type Users struct {
