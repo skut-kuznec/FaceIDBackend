@@ -25,11 +25,20 @@ db:
   password: "devUserPassword"
   dbname: "faceid"
   ssl_mode: false
+log:
+  level: "debug"
+  to_file: false
+  filename: "log/epg.log"
 ```
 
 Run application:
 ```shell
 make run
+```
+
+Make Swagger documentation 
+```shell
+make swag
 ```
 
 For more details see:
