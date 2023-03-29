@@ -7,7 +7,9 @@ import (
 	"FaceIDApp/internal/infrastructure/api/server"
 	"FaceIDApp/internal/infrastructure/store/db"
 	"FaceIDApp/internal/infrastructure/store/memstore"
-	"FaceIDApp/internal/usecases/repos/usersrepo"
+	"FaceIDApp/internal/service"
+	"FaceIDApp/internal/usecases/app/repos/calendarrepo"
+	"FaceIDApp/internal/usecases/app/repos/usersrepo"
 	"context"
 	"fmt"
 	"github.com/rs/zerolog/log"
@@ -15,45 +17,41 @@ import (
 	"os/signal"
 )
 
+var uStore usersrepo.UserStore
+var cStore calendarrepo.CalendarStorage
+
 func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	cfg, err := config.NewConfig()
 	if err != nil {
-		fmt.Printf("%s Loading config", err)
+		log.Fatal().Msgf("%s Loading config", err)
+
 	}
-	fmt.Printf("%+v", cfg)
 	switch cfg.DBEnable() {
 	case true:
-		store, err := db.NewPostgres(cfg.DBConfig())
+		dbCon, err := db.NewPostgres(cfg.DBConfig())
 		if err != nil {
 			log.Fatal().Msgf("not connect to DB | %s", err)
 		}
-		repo := usersrepo.NewUsersRepo(store)
-		h := handler.NewHandler(repo)
-		router := routergin.NewRouterGin(h, cfg.APIConfig())
-		serv := server.NewServer(cfg.APIConfig(), router)
-		serv.Start(repo)
-
-		fmt.Println("Program Start")
-		<-ctx.Done()
-		fmt.Println("Program Stop")
-		serv.Stop()
-		cancel()
-
+		uStore = db.NewUSerStore(dbCon)
+		cStore = db.NewCalendarStore(dbCon)
 	case false:
-		store := memstore.NewMemStore()
-		repo := usersrepo.NewUsersRepo(store)
-		h := handler.NewHandler(repo)
-		router := routergin.NewRouterGin(h, cfg.APIConfig())
-		serv := server.NewServer(cfg.APIConfig(), router)
-		serv.Start(repo)
-
-		fmt.Println("Program Start")
-		<-ctx.Done()
-		fmt.Println("Program Stop")
-		serv.Stop()
-		cancel()
-
+		uStore = memstore.NewUseStore()
+		cStore = memstore.NewCalendarStore()
 	}
 
+	calendarRepo := calendarrepo.NewCalendarRepo(cStore)
+	userRepo := usersrepo.NewUsersRepo(uStore)
+	serviceApp := service.NewService(userRepo, calendarRepo)
+
+	userHandlers := handler.NewHandler(serviceApp)
+	router := routergin.NewRouterGin(userHandlers, cfg.APIConfig())
+	serv := server.NewServer(cfg.APIConfig(), router)
+	serv.Start(serviceApp)
+
+	fmt.Println("Program Start")
+	<-ctx.Done()
+	fmt.Println("Program Stop")
+	serv.Stop()
+	cancel()
 }

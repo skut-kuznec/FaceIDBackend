@@ -13,6 +13,11 @@ import (
 	"time"
 )
 
+type Answer struct {
+	Code    int    `json:"code"  example:"200"`
+	Message string `json:"message" example:"OK"`
+}
+
 // @title Swagger API
 // @version 1.0
 // @description Swagger API for Golang Project Blueprint.
@@ -43,9 +48,12 @@ func NewRouterGin(h *handler.Handlers, cfg config.API) *RouterGin {
 	swag := ret.RouterGroup
 	swag.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	app := ret.RouterGroup
+	open := ret.RouterGroup
 
-	app.GET("/health", router.Health)
+	open.GET("/health", router.Health)
+
+	private := ret.RouterGroup
+	private.GET("/photo", router.GetPhotoInfo)
 	router.Engine = ret
 
 	return router
@@ -125,6 +133,15 @@ func structureLogger(logger *zerolog.Logger) gin.HandlerFunc {
 // @Produce json
 // @Success 200
 // @Router /health [get]
+// @Success 200 {object} Answer "OK response"
 func (g RouterGin) Health(c *gin.Context) {
-	c.Writer.WriteHeader(http.StatusOK)
+	answer := Answer{
+		Code:    http.StatusOK,
+		Message: "OK",
+	}
+	c.JSON(answer.Code, answer)
+}
+
+func (g RouterGin) GetPhotoInfo(c *gin.Context) {
+
 }

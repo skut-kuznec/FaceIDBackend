@@ -1,4 +1,14 @@
 basePath: /
+definitions:
+  routergin.Answer:
+    properties:
+      code:
+        example: 200
+        type: integer
+      message:
+        example: OK
+        type: string
+    type: object
 info:
   contact:
     email: stas@kuznec.team
@@ -17,7 +27,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: OK response
+          schema:
+            $ref: '#/definitions/routergin.Answer'
       summary: health check
       tags:
       - Public API

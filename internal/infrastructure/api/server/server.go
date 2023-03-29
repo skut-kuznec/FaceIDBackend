@@ -2,7 +2,7 @@ package server
 
 import (
 	"FaceIDApp/internal/config"
-	"FaceIDApp/internal/usecases/repos/usersrepo"
+	"FaceIDApp/internal/service"
 	"context"
 	"fmt"
 	"net/http"
@@ -10,8 +10,8 @@ import (
 )
 
 type Server struct {
-	srv  http.Server
-	repo *usersrepo.Users
+	srv     http.Server
+	service *service.Store
 }
 
 func NewServer(conf config.API, h http.Handler) *Server {
@@ -34,7 +34,7 @@ func (s *Server) Stop() {
 	s.srv.Shutdown(ctx)
 	cancel()
 }
-func (s *Server) Start(eap *usersrepo.Users) {
-	s.repo = eap
+func (s *Server) Start(eap *service.Store) {
+	s.service = eap
 	go s.srv.ListenAndServe()
 }

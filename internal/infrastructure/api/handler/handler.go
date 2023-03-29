@@ -1,14 +1,16 @@
 package handler
 
-import "FaceIDApp/internal/usecases/repos/usersrepo"
+import (
+	"FaceIDApp/internal/service"
+)
 
 type Handlers struct {
-	repo *usersrepo.Users
+	s *service.Store
 }
 
-func NewHandler(r *usersrepo.Users) *Handlers {
+func NewHandler(s *service.Store) *Handlers {
 	h := &Handlers{
-		repo: r,
+		s: s,
 	}
 	return h
 }

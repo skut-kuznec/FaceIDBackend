@@ -35,8 +35,26 @@ const docTemplate = `{
                 "summary": "health check",
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK response",
+                        "schema": {
+                            "$ref": "#/definitions/routergin.Answer"
+                        }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "routergin.Answer": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "message": {
+                    "type": "string",
+                    "example": "OK"
                 }
             }
         }
