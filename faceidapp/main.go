@@ -44,7 +44,7 @@ func main() {
 		cStore = memstore.NewCalendarStore()
 	}
 
-	fileStore := filestore.NewPhotoStore("./upl")
+	fileStore := filestore.NewPhotoStore(cfg.FileUploadDir())
 	fileRepo := photorepo.NewPhotoRepo(fileStore)
 	calendarRepo := calendarrepo.NewCalendarRepo(cStore)
 	userRepo := usersrepo.NewUsersRepo(uStore)

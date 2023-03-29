@@ -8,6 +8,7 @@ type Config struct {
 	API
 	DB
 	Log
+	Files
 }
 
 func NewConfig() (*Config, error) {
@@ -36,6 +37,10 @@ func (c *Config) ConfigFromViper() error {
 		return err
 	}
 	err = c.ConfigDB()
+	if err != nil {
+		return err
+	}
+	err = c.ConfigFiles()
 	if err != nil {
 		return err
 	}

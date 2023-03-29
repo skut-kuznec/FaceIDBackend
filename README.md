@@ -29,6 +29,8 @@ log:
   level: "debug"
   to_file: false
   filename: "log/epg.log"
+files:
+  upload_dir: "upl"
 ```
 
 Run application:
