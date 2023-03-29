@@ -4,13 +4,14 @@ import (
 	"FaceIDApp/internal/config"
 	_ "FaceIDApp/internal/docs"
 	"FaceIDApp/internal/infrastructure/api/handler"
+	"net/http"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"net/http"
-	"time"
 )
 
 type Answer struct {

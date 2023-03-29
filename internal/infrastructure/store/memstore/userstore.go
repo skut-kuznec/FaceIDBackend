@@ -3,8 +3,9 @@ package memstore
 import (
 	"FaceIDApp/internal/entities/users"
 	"context"
-	"github.com/google/uuid"
 	"sync"
+
+	"github.com/google/uuid"
 )
 
 type UserStore struct {

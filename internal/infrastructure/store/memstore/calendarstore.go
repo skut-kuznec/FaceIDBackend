@@ -4,9 +4,10 @@ import (
 	"FaceIDApp/internal/entities/users"
 	"FaceIDApp/internal/entities/workcalendar"
 	"context"
-	"github.com/google/uuid"
 	"sync"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type CalendarStore struct {
