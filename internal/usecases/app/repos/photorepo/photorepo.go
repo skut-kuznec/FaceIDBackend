@@ -7,9 +7,9 @@ import (
 )
 
 type PhotoStore interface {
-	Create(ctx context.Context, photo photo.Photo) (uuid.UUID, error)
+	Create(ctx context.Context, ph photo.Photo) (uuid.UUID, error)
 	Read(ctx context.Context, id uuid.UUID) (interface{}, error)
-	ProcessedAI(ctx context.Context, photo photo.Photo) (int64, error)
+	ProcessedAI(ctx context.Context, ph photo.Photo) (int64, error)
 	Delete(ctx context.Context, d uuid.UUID) error
 }
 
