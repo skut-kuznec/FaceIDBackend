@@ -1,8 +1,9 @@
 package db
 
 import (
-	"FaceIDApp/internal/entities/users"
 	"context"
+
+	"FaceIDApp/internal/entities/stuff"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -19,32 +20,26 @@ func NewUSerStore(db *sqlx.DB) *UserStore {
 	return us
 }
 
-func (u *UserStore) Create(ctx context.Context, us users.User) (uuid.UUID, error) {
-	//TODO implement me
+func (u *UserStore) Create(ctx context.Context, us stuff.Stuff) (uuid.UUID, error) {
 	panic("implement me")
 }
 
-func (u *UserStore) Read(ctx context.Context, id uuid.UUID) (users.User, error) {
-	//TODO implement me
+func (u *UserStore) Read(ctx context.Context, id uuid.UUID) (stuff.Stuff, error) {
 	panic("implement me")
 }
 
-func (u *UserStore) Update(ctx context.Context, id uuid.UUID, us users.User) (users.User, error) {
-	//TODO implement me
+func (u *UserStore) Update(ctx context.Context, id uuid.UUID, us stuff.Stuff) (stuff.Stuff, error) {
 	panic("implement me")
 }
 
 func (u *UserStore) Delete(ctx context.Context, id uuid.UUID) error {
-	//TODO implement me
 	panic("implement me")
 }
 
-func (u *UserStore) ReadAll(ctx context.Context) ([]users.User, error) {
-	//TODO implement me
+func (u *UserStore) ReadAll(ctx context.Context) ([]stuff.Stuff, error) {
 	panic("implement me")
 }
 
-func (u *UserStore) ReadIAID(ctx context.Context, aiID int64) (users.User, error) {
-	//TODO implement me
+func (u *UserStore) ReadIAID(ctx context.Context, aiID int64) (stuff.Stuff, error) {
 	panic("implement me")
 }

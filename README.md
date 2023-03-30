@@ -2,6 +2,10 @@
 
 Проект - бэкэнд для обработки времени прихода и ухода с работы по лицу.
 Фото лица делается из мобильного приложения.
+Над проектом работают:
+
+[Степан Волков](https://github.com/stepan2volkov),
+[Стас Кузнецов](https://github.com/smart48ru)
 
 Подробности смотреть в [Wiki](https://github.com/smart48ru/FaceIDBackend/wiki) проекта.
 
@@ -9,7 +13,7 @@
 
 ```yaml
 ---
-api:
+r:
   host: "127.0.0.1"
   port: 8080
   program_key: "ProgAuthKey"

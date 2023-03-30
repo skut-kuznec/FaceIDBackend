@@ -1,18 +1,18 @@
 package service
 
 import (
-	"FaceIDApp/internal/usecases/app/repos/calendarrepo"
-	"FaceIDApp/internal/usecases/app/repos/photorepo"
-	"FaceIDApp/internal/usecases/app/repos/usersrepo"
+	"FaceIDApp/internal/usecases/app/repos/imagerepo"
+	"FaceIDApp/internal/usecases/app/repos/stuffrepo"
+	"FaceIDApp/internal/usecases/app/repos/timerecordrepo"
 )
 
 type Store struct {
-	u *usersrepo.Users
-	c *calendarrepo.Calendar
-	p *photorepo.Photo
+	u *stuffrepo.Stuff
+	c *timerecordrepo.TimeRecord
+	p *imagerepo.Image
 }
 
-func NewService(u *usersrepo.Users, c *calendarrepo.Calendar, p *photorepo.Photo) *Store {
+func NewService(u *stuffrepo.Stuff, c *timerecordrepo.TimeRecord, p *imagerepo.Image) *Store {
 	r := &Store{
 		u: u,
 		c: c,

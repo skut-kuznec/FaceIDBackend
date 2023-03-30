@@ -45,5 +45,4 @@ func (c *Config) ConfigFromViper() error {
 		return err
 	}
 	return nil
-
 }

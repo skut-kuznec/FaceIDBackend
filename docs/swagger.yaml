@@ -1,0 +1,74 @@
+basePath: /
+definitions:
+  routergin.OKAnswer:
+    properties:
+      code:
+        example: 200
+        type: integer
+      message:
+        example: OK
+        type: string
+    type: object
+  routergin.StuffAnswer:
+    properties:
+      id:
+        example: 1
+        type: integer
+      meta:
+        additionalProperties: true
+        type: object
+      name:
+        example: Сергей
+        type: string
+      photo_id:
+        example: 0
+        type: integer
+    type: object
+info:
+  contact:
+    email: stas@kuznec.team
+    name: API Support
+  description: Swagger API for Golang FaceID.
+  termsOfService: https://swagger.io/terms/
+  title: Swagger API
+  version: "1.0"
+paths:
+  /api/stuff/all:
+    get:
+      consumes:
+      - application/json
+      description: health check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK response
+          schema:
+            items:
+              $ref: '#/definitions/routergin.StuffAnswer'
+            type: array
+        "500":
+          description: BAD response
+          schema:
+            items:
+              $ref: '#/definitions/routergin.StuffAnswer'
+            type: array
+      summary: health check
+      tags:
+      - Stuff Api
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: health check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK response
+          schema:
+            $ref: '#/definitions/routergin.OKAnswer'
+      summary: health check
+      tags:
+      - Public API
+swagger: "2.0"

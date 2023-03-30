@@ -29,7 +29,7 @@ func (c *DB) ConfigDB() error {
 	}
 	c.dbUser = viper.GetString("db.user")
 	if c.dbUser == "" {
-		return fmt.Errorf("db.users not in config")
+		return fmt.Errorf("db.stuff not in config")
 	}
 	c.dbPassword = viper.GetString("db.password")
 	if c.dbPassword == "" {
