@@ -54,3 +54,5 @@ make
 # or
 make help
 ```
+
+[![codecov](https://codecov.io/gh/smart48ru/FaceIDBackend/branch/main/graph/badge.svg?token=0QBDIQB1YN)](https://codecov.io/gh/smart48ru/FaceIDBackend)
