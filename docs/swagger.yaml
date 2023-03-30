@@ -1,6 +1,6 @@
 basePath: /
 definitions:
-  routergin.Answer:
+  routergin.OKAnswer:
     properties:
       code:
         example: 200
@@ -15,9 +15,8 @@ definitions:
         example: 1
         type: integer
       meta:
-        items:
-          type: string
-        type: array
+        additionalProperties: true
+        type: object
       name:
         example: Сергей
         type: string
@@ -45,7 +44,15 @@ paths:
         "200":
           description: OK response
           schema:
-            $ref: '#/definitions/routergin.StuffAnswer'
+            items:
+              $ref: '#/definitions/routergin.StuffAnswer'
+            type: array
+        "500":
+          description: BAD response
+          schema:
+            items:
+              $ref: '#/definitions/routergin.StuffAnswer'
+            type: array
       summary: health check
       tags:
       - Stuff Api
@@ -60,7 +67,7 @@ paths:
         "200":
           description: OK response
           schema:
-            $ref: '#/definitions/routergin.Answer'
+            $ref: '#/definitions/routergin.OKAnswer'
       summary: health check
       tags:
       - Public API

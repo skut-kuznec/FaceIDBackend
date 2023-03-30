@@ -11,15 +11,16 @@ func (g RouterGin) AddStaffEndPoint(context *gin.Context) {
 }
 
 // GetAllStaffEndPoint godoc
-// @Summary health check
+// @Summary Get All Stuff
 // @Schemes
-// @Description health check
+// @Description Get All Stuff
 // @Tags Stuff Api
 // @Accept json
 // @Produce json
 // @Success 200
-// @Router /api/staff/all [get]
-// @Success 200 {object} StuffAnswer "OK response"
+// @Router /api/stuff/all [get]
+// @Success 200 {array} StuffAnswer "OK response"
+// @Success 500 {array} StuffAnswer "BAD response"
 func (g RouterGin) GetAllStaffEndPoint(c *gin.Context) {
 	stuffAnswer := StuffAnswer{
 		ID:      1,

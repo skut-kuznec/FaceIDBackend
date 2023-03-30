@@ -10,9 +10,9 @@ export SYS_GOLANGCI_LINT=$(shell which golangci-lint)
 export SYS_SWAG=$(shell which swag)
 
 .PHONY: run
-## Run as go run cmd/faceidapp/main.go
-run: cmd/faceidapp/main.go
-	$(SYS_GO) run cmd/faceidapp/main.go
+## Run as go run cmd/face_detector/main.go
+run: cmd/face_detector
+	$(SYS_GO) run cmd/face_detector/main.go
 
 .PHONY: tidy
 ## Install all requirements

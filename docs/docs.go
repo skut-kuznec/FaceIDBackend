@@ -37,7 +37,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK response",
                         "schema": {
-                            "$ref": "#/definitions/routergin.StuffAnswer"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/routergin.StuffAnswer"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "BAD response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/routergin.StuffAnswer"
+                            }
                         }
                     }
                 }
@@ -60,7 +72,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK response",
                         "schema": {
-                            "$ref": "#/definitions/routergin.Answer"
+                            "$ref": "#/definitions/routergin.OKAnswer"
                         }
                     }
                 }
@@ -68,7 +80,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "routergin.Answer": {
+        "routergin.OKAnswer": {
             "type": "object",
             "properties": {
                 "code": {
@@ -89,10 +101,8 @@ const docTemplate = `{
                     "example": 1
                 },
                 "meta": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "type": "object",
+                    "additionalProperties": true
                 },
                 "name": {
                     "type": "string",
