@@ -1,3 +1,5 @@
+BIN:= ${PWD}/bin
+MIGRATIONS_DIR=./migrations
 SHELL := /bin/bash
 .SILENT:
 .DEFAULT_GOAL := help
@@ -42,12 +44,20 @@ test:
 .PHONY: lint
 ## Run golangci-lint
 lint:
-	$(SYS_GOLANGCI_LINT) -v run --out-format=colored-line-number --fix --config .golangci.yaml ./...
+	@${BIN}/golangci-lint run --out-format=colored-line-number --fix --config .golangci.yaml ./...
 
-.PHONY: swag
-## Run swag - autogenerate https://github.com/swaggo/swag
-swag:
-	$(SYS_SWAG) init -g internal/infrastructure/api/routergin/*.go -output internal/docs
+.PHONY: install-tools
+## Install required project tools
+install-tools:
+	$(info Installing tools into ./bin folder)
+	@mkdir -p ./bin
+	@GOBIN=${BIN} go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.52.2
+	@GOBIN=${BIN} go install github.com/deepmap/oapi-codegen/cmd/oapi-codegen@v1.11.0
+
+.PHONY: generate
+## Generating API using openapi contract
+generate:
+	@./bin/oapi-codegen -config openapi.gen.yaml ./docs/openapi.yaml
 
 .PHONY: help
 ## Show this help message

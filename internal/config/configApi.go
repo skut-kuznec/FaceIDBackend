@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -11,9 +12,10 @@ type API struct {
 	apiPort            int
 	apiProgramKey      string
 	apiAdminKey        string
-	apiReadTimeOut     int
-	apiWriteTimeOut    int
-	apiReadHeadTimeOut int
+	apiReadTimeOut     time.Duration
+	apiWriteTimeOut    time.Duration
+	apiReadHeadTimeOut time.Duration
+	apiRelease         bool
 }
 
 func (a *API) ConfigAAPI() error {
@@ -33,18 +35,19 @@ func (a *API) ConfigAAPI() error {
 	if a.apiAdminKey == "" {
 		return fmt.Errorf("api.admin_key not in config")
 	}
-	a.apiReadTimeOut = viper.GetInt("api.read_time_out")
+	a.apiReadTimeOut = viper.GetDuration("api.read_time_out")
 	if a.apiReadTimeOut == 0 {
-		a.apiReadTimeOut = 30
+		a.apiReadTimeOut = 30 * time.Second
 	}
-	a.apiWriteTimeOut = viper.GetInt("api.write_time_out")
+	a.apiWriteTimeOut = viper.GetDuration("api.write_time_out")
 	if a.apiWriteTimeOut == 0 {
-		a.apiWriteTimeOut = 30
+		a.apiWriteTimeOut = 30 * time.Second
 	}
-	a.apiReadHeadTimeOut = viper.GetInt("api.read_head_time_out")
+	a.apiReadHeadTimeOut = viper.GetDuration("api.read_head_time_out")
 	if a.apiReadHeadTimeOut == 0 {
-		a.apiReadHeadTimeOut = 30
+		a.apiReadHeadTimeOut = 30 * time.Second
 	}
+	a.apiRelease = viper.GetBool("api.release")
 	return nil
 }
 
@@ -64,18 +67,18 @@ func (a *API) APIAdminKey() string {
 	return a.apiAdminKey
 }
 
-func (a *API) APIReadTimeOut() int {
+func (a *API) APIReadTimeOut() time.Duration {
 	return a.apiReadTimeOut
 }
 
-func (a *API) APIWriteTimeOut() int {
+func (a *API) APIWriteTimeOut() time.Duration {
 	return a.apiWriteTimeOut
 }
 
-func (a *API) APIReadHeadTimeOut() int {
+func (a *API) APIReadHeadTimeOut() time.Duration {
 	return a.apiReadHeadTimeOut
 }
 
-func (a *API) APIConfig() API {
-	return *a
+func (a *API) APIRRelease() bool {
+	return a.apiRelease
 }

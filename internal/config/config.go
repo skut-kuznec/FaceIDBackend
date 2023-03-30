@@ -40,7 +40,7 @@ func (c *Config) ConfigFromViper() error {
 	if err != nil {
 		return err
 	}
-	err = c.ConfigFiles()
+	err = c.ConfigImage()
 	if err != nil {
 		return err
 	}
