@@ -1,20 +1,21 @@
 package main
 
 import (
-	"FaceIDApp/internal/config"
-	"FaceIDApp/internal/infrastructure/api/handler"
-	"FaceIDApp/internal/infrastructure/api/routergin"
-	"FaceIDApp/internal/infrastructure/api/server"
-	"FaceIDApp/internal/infrastructure/store/db"
-	"FaceIDApp/internal/infrastructure/store/filestore"
-	"FaceIDApp/internal/infrastructure/store/memstore"
-	"FaceIDApp/internal/service"
-	"FaceIDApp/internal/usecases/app/repos/imagerepo"
-	"FaceIDApp/internal/usecases/app/repos/stuffrepo"
-	"FaceIDApp/internal/usecases/app/repos/timerecordrepo"
 	"context"
 	"os"
 	"os/signal"
+
+	"github.com/smart48ru/FaceIDApp/internal/config"
+	"github.com/smart48ru/FaceIDApp/internal/infrastructure/api/handler"
+	"github.com/smart48ru/FaceIDApp/internal/infrastructure/api/routergin"
+	"github.com/smart48ru/FaceIDApp/internal/infrastructure/api/server"
+	"github.com/smart48ru/FaceIDApp/internal/infrastructure/store/db"
+	"github.com/smart48ru/FaceIDApp/internal/infrastructure/store/filestore"
+	"github.com/smart48ru/FaceIDApp/internal/infrastructure/store/memstore"
+	"github.com/smart48ru/FaceIDApp/internal/service"
+	"github.com/smart48ru/FaceIDApp/internal/usecases/app/repos/imagerepo"
+	"github.com/smart48ru/FaceIDApp/internal/usecases/app/repos/stuffrepo"
+	"github.com/smart48ru/FaceIDApp/internal/usecases/app/repos/timerecordrepo"
 
 	"github.com/rs/zerolog/log"
 )

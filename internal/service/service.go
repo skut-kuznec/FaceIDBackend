@@ -1,9 +1,9 @@
 package service
 
 import (
-	"FaceIDApp/internal/usecases/app/repos/imagerepo"
-	"FaceIDApp/internal/usecases/app/repos/stuffrepo"
-	"FaceIDApp/internal/usecases/app/repos/timerecordrepo"
+	"github.com/smart48ru/FaceIDApp/internal/usecases/app/repos/imagerepo"
+	"github.com/smart48ru/FaceIDApp/internal/usecases/app/repos/stuffrepo"
+	"github.com/smart48ru/FaceIDApp/internal/usecases/app/repos/timerecordrepo"
 )
 
 type Store struct {

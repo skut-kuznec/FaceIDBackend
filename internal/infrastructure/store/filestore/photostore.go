@@ -3,7 +3,7 @@ package filestore
 import (
 	"context"
 
-	"FaceIDApp/internal/entities/image"
+	"github.com/smart48ru/FaceIDApp/internal/entities/image"
 
 	"github.com/google/uuid"
 )

@@ -7,7 +7,7 @@
 [Степан Волков](https://github.com/stepan2volkov),
 [Стас Кузнецов](https://github.com/smart48ru)
 
-Подробности смотреть в [Wiki](https://github.com/smart48ru/FaceIDBackend/wiki) проекта.
+Подробности смотреть в [Wiki](https://github.com/smart48ru/FaceIDAppFaceIDBackend/wiki) проекта.
 
 Конфигурационный файл ищется по пути `$./cfg/config.yaml`. Пример конфига:
 

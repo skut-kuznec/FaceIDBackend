@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"FaceIDApp/internal/config"
-	"FaceIDApp/internal/service"
+	"github.com/smart48ru/FaceIDApp/internal/config"
+	"github.com/smart48ru/FaceIDApp/internal/service"
 
 	"github.com/rs/zerolog/log"
 )

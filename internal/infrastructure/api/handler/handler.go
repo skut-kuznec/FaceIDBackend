@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"FaceIDApp/internal/service"
+	"github.com/smart48ru/FaceIDApp/internal/service"
 )
 
 type Handlers struct {

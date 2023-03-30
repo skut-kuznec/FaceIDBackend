@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync"
 
-	"FaceIDApp/internal/entities/stuff"
+	"github.com/smart48ru/FaceIDApp/internal/entities/stuff"
 
 	"github.com/google/uuid"
 )

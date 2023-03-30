@@ -3,7 +3,7 @@ package stuffrepo
 import (
 	"context"
 
-	"FaceIDApp/internal/entities/stuff"
+	"github.com/smart48ru/FaceIDApp/internal/entities/stuff"
 
 	"github.com/google/uuid"
 )

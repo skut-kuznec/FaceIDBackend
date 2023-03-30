@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"FaceIDApp/internal/entities/stuff"
-	"FaceIDApp/internal/entities/timerecord"
+	"github.com/smart48ru/FaceIDApp/internal/entities/stuff"
+	"github.com/smart48ru/FaceIDApp/internal/entities/timerecord"
 
 	"github.com/google/uuid"
 )

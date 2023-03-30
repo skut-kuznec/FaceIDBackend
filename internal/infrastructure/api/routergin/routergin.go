@@ -1,11 +1,12 @@
 package routergin
 
 import (
-	_ "FaceIDApp/docs"
-	"FaceIDApp/internal/config"
-	"FaceIDApp/internal/infrastructure/api/handler"
 	"net/http"
 	"time"
+
+	_ "github.com/smart48ru/FaceIDApp/docs"
+	"github.com/smart48ru/FaceIDApp/internal/config"
+	"github.com/smart48ru/FaceIDApp/internal/infrastructure/api/handler"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"

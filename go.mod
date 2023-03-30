@@ -1,4 +1,4 @@
-module FaceIDApp
+module github.com/smart48ru/FaceIDApp
 
 go 1.20
 
