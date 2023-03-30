@@ -13,7 +13,7 @@ type Repo struct {
 }
 
 // Create implements staffservice.StaffRepo
-func (*Repo) Create(ctx context.Context, u domain.Staff) (int, error) {
+func (*Repo) Create(ctx context.Context, u domain.Employee) (int, error) {
 	panic("unimplemented")
 }
 
@@ -23,17 +23,17 @@ func (*Repo) Delete(ctx context.Context, id int) error {
 }
 
 // Read implements staffservice.StaffRepo
-func (*Repo) Read(ctx context.Context, id int) (domain.Staff, error) {
+func (*Repo) Read(ctx context.Context, id int) (domain.Employee, error) {
 	panic("unimplemented")
 }
 
 // ReadAll implements staffservice.StaffRepo
-func (*Repo) ReadAll(ctx context.Context) ([]domain.Staff, error) {
+func (*Repo) ReadAll(ctx context.Context) ([]domain.Employee, error) {
 	panic("unimplemented")
 }
 
 // Update implements staffservice.StaffRepo
-func (*Repo) Update(ctx context.Context, id int, u domain.Staff) (domain.Staff, error) {
+func (*Repo) Update(ctx context.Context, id int, u domain.Employee) (domain.Employee, error) {
 	panic("unimplemented")
 }
 

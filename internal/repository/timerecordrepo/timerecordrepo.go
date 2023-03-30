@@ -29,12 +29,12 @@ func (*Repo) Read(ctx context.Context, day time.Time) (domain.TimeRecord, error)
 }
 
 // ReadAll implements timerecordservice.TimeRecordRepo
-func (*Repo) ReadAll(ctx context.Context) ([]domain.Staff, error) {
+func (*Repo) ReadAll(ctx context.Context) ([]domain.Employee, error) {
 	panic("unimplemented")
 }
 
 // Update implements timerecordservice.TimeRecordRepo
-func (*Repo) Update(ctx context.Context, day time.Time, c domain.TimeRecord) (domain.Staff, error) {
+func (*Repo) Update(ctx context.Context, day time.Time, c domain.TimeRecord) (domain.Employee, error) {
 	panic("unimplemented")
 }
 

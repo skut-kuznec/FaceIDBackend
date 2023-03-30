@@ -15,6 +15,7 @@ type API struct {
 	apiReadTimeOut     time.Duration
 	apiWriteTimeOut    time.Duration
 	apiReadHeadTimeOut time.Duration
+	apiRelease         bool
 }
 
 func (a *API) ConfigAAPI() error {
@@ -46,6 +47,7 @@ func (a *API) ConfigAAPI() error {
 	if a.apiReadHeadTimeOut == 0 {
 		a.apiReadHeadTimeOut = 30 * time.Second
 	}
+	a.apiRelease = viper.GetBool("api.release")
 	return nil
 }
 
@@ -75,4 +77,8 @@ func (a *API) APIWriteTimeOut() time.Duration {
 
 func (a *API) APIReadHeadTimeOut() time.Duration {
 	return a.apiReadHeadTimeOut
+}
+
+func (a *API) APIRRelease() bool {
+	return a.apiRelease
 }

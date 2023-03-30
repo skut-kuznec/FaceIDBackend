@@ -4,9 +4,8 @@ import (
 	"time"
 )
 
-// TimeRecord - структура записи
 type TimeRecord struct {
-	WorkerID   int
+	Employee   int
 	StartWork  time.Time
 	FinishWork time.Time
 }

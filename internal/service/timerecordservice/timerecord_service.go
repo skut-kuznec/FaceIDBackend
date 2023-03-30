@@ -10,9 +10,9 @@ import (
 type TimeRecordRepo interface {
 	Create(ctx context.Context, c domain.TimeRecord) (int, error)
 	Read(ctx context.Context, day time.Time) (domain.TimeRecord, error)
-	Update(ctx context.Context, day time.Time, c domain.TimeRecord) (domain.Staff, error)
+	Update(ctx context.Context, day time.Time, c domain.TimeRecord) (domain.Employee, error)
 	Delete(ctx context.Context, day time.Time, userID int) error
-	ReadAll(ctx context.Context) ([]domain.Staff, error)
+	ReadAll(ctx context.Context) ([]domain.Employee, error)
 }
 
 type Service struct {

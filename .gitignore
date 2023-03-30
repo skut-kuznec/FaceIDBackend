@@ -20,3 +20,4 @@ vendor/
 #Config
 cfg
 bin
+/coverage.txt

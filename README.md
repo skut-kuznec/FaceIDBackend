@@ -42,15 +42,11 @@ Run application:
 make run
 ```
 
-Make Swagger documentation 
-```shell
-make swag
-```
-
 For more details see:
-
 ```shell
 make
 # or
 make help
 ```
+
+[![codecov](https://codecov.io/gh/smart48ru/FaceIDBackend/branch/main/graph/badge.svg?token=0QBDIQB1YN)](https://codecov.io/gh/smart48ru/FaceIDBackend)

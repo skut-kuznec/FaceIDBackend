@@ -1,19 +1,5 @@
 BIN:= ${PWD}/bin
 MIGRATIONS_DIR=./migrations
-
-.PHONY: install-tools
-## Install required project tools
-install-tools:
-	$(info Installing tools into ./bin folder)
-	@mkdir -p ./bin
-	@GOBIN=${BIN} go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.52.2
-	@GOBIN=${BIN} go install github.com/deepmap/oapi-codegen/cmd/oapi-codegen@v1.11.0
-
-.PHONY: generate
-## Generating API using openapi contract
-generate:
-	@./bin/oapi-codegen -config openapi.gen.yaml ./docs/openapi.yaml
-
 SHELL := /bin/bash
 .SILENT:
 .DEFAULT_GOAL := help
@@ -59,6 +45,19 @@ test:
 ## Run golangci-lint
 lint:
 	@${BIN}/golangci-lint run --out-format=colored-line-number --fix --config .golangci.yaml ./...
+
+.PHONY: install-tools
+## Install required project tools
+install-tools:
+	$(info Installing tools into ./bin folder)
+	@mkdir -p ./bin
+	@GOBIN=${BIN} go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.52.2
+	@GOBIN=${BIN} go install github.com/deepmap/oapi-codegen/cmd/oapi-codegen@v1.11.0
+
+.PHONY: generate
+## Generating API using openapi contract
+generate:
+	@./bin/oapi-codegen -config openapi.gen.yaml ./docs/openapi.yaml
 
 .PHONY: help
 ## Show this help message

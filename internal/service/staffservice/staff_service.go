@@ -7,11 +7,11 @@ import (
 )
 
 type StaffRepo interface {
-	Create(ctx context.Context, u domain.Staff) (int, error)
-	Read(ctx context.Context, id int) (domain.Staff, error)
-	Update(ctx context.Context, id int, u domain.Staff) (domain.Staff, error)
+	Create(ctx context.Context, u domain.Employee) (int, error)
+	Read(ctx context.Context, id int) (domain.Employee, error)
+	Update(ctx context.Context, id int, u domain.Employee) (domain.Employee, error)
 	Delete(ctx context.Context, id int) error
-	ReadAll(ctx context.Context) ([]domain.Staff, error)
+	ReadAll(ctx context.Context) ([]domain.Employee, error)
 }
 
 type Service struct {

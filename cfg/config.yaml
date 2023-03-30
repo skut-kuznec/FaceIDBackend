@@ -2,21 +2,13 @@ api:
   host: "127.0.0.1"
   port: 8080
   program_key: "ProgAuthDevKey"
-  admin_key: "AdminAuthDevKey"
   read_time_out: 40s
   write_time_out: 20s
   read_head_time_out: 50s
-db:
-  enable: false
-  host: "127.0.0.1"
-  port: 5432
-  user: "devUser"
-  password: "devUserPassword"
-  dbname: "faceid"
-  ssl_mode: false
+  release: false
 log:
   level: "debug"
   to_file: false
   filename: "log/epg.log"
-files:
+image:
   upload_dir: "upl"

@@ -38,9 +38,14 @@ func main() {
 	imageService := imageservice.New(imageRepo)
 	timeRecordService := timerecordservice.New(timeRecordRepo)
 
-	handler := handler.New(imageService, staffService, timeRecordService)
+	hn := handler.New(imageService, staffService, timeRecordService)
+
+	if cfg.APIRRelease() {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	router := gin.New()
-	router = openapi.RegisterHandlers(router, handler)
+	router = openapi.RegisterHandlers(router, hn)
 
 	log.Info().Msgf("Running server on port %d", cfg.API.APIPort())
 	serv := server.NewServer(cfg, router)
