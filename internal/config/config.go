@@ -6,7 +6,6 @@ import (
 
 type Config struct {
 	API
-	DB
 	Log
 	Files
 }
@@ -33,10 +32,6 @@ func (c *Config) ConfigFromViper() error {
 		return err
 	}
 	err = c.ConfigAAPI()
-	if err != nil {
-		return err
-	}
-	err = c.ConfigDB()
 	if err != nil {
 		return err
 	}

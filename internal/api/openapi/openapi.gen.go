@@ -8,10 +8,12 @@ import (
 	"compress/gzip"
 	"encoding/base64"
 	"fmt"
+	"net/http"
 	"net/url"
 	"path"
 	"strings"
 
+	"github.com/deepmap/oapi-codegen/pkg/runtime"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/gin-gonic/gin"
 )
@@ -28,7 +30,30 @@ type CreateEmployeeRequest struct {
 
 // CreateEmployeeResponse defines model for CreateEmployeeResponse.
 type CreateEmployeeResponse struct {
-	ID int64 `json:"id"`
+	ID      int64  `json:"id"`
+	Meta    Any    `json:"meta"`
+	Name    string `json:"name"`
+	PhotoID int64  `json:"photo_id"`
+}
+
+// DeleteEmployeeResponse defines model for DeleteEmployeeResponse.
+type DeleteEmployeeResponse struct {
+	Message string `json:"message"`
+}
+
+// Employee defines model for Employee.
+type Employee struct {
+	ID      int64  `json:"id"`
+	Meta    Any    `json:"meta"`
+	Name    string `json:"name"`
+	PhotoID int64  `json:"photo_id"`
+}
+
+// EmployeeBase defines model for EmployeeBase.
+type EmployeeBase struct {
+	Meta    Any    `json:"meta"`
+	Name    string `json:"name"`
+	PhotoID int64  `json:"photo_id"`
 }
 
 // Error defines model for Error.
@@ -36,17 +61,85 @@ type Error struct {
 	Error *string `json:"error,omitempty"`
 }
 
+// GetEmployeeResponse defines model for GetEmployeeResponse.
+type GetEmployeeResponse struct {
+	ID      int64  `json:"id"`
+	Meta    Any    `json:"meta"`
+	Name    string `json:"name"`
+	PhotoID int64  `json:"photo_id"`
+}
+
+// ListEmployeesResponse defines model for ListEmployeesResponse.
+type ListEmployeesResponse = []Employee
+
+// RecognizeEmployeeResponse defines model for RecognizeEmployeeResponse.
+type RecognizeEmployeeResponse struct {
+	ID      int64  `json:"id"`
+	Meta    Any    `json:"meta"`
+	Name    string `json:"name"`
+	PhotoID int64  `json:"photo_id"`
+}
+
+// UpdateEmployeeRequest defines model for UpdateEmployeeRequest.
+type UpdateEmployeeRequest struct {
+	ID      int64  `json:"id"`
+	Meta    Any    `json:"meta"`
+	Name    string `json:"name"`
+	PhotoID int64  `json:"photo_id"`
+}
+
+// UpdateEmployeeResponse defines model for UpdateEmployeeResponse.
+type UpdateEmployeeResponse struct {
+	ID      int64  `json:"id"`
+	Meta    Any    `json:"meta"`
+	Name    string `json:"name"`
+	PhotoID int64  `json:"photo_id"`
+}
+
 // CreateEmployeeJSONBody defines parameters for CreateEmployee.
 type CreateEmployeeJSONBody = CreateEmployeeRequest
+
+// DeleteEmployeeParams defines parameters for DeleteEmployee.
+type DeleteEmployeeParams struct {
+	// Employee ID
+	ID uint64 `form:"id" json:"id"`
+}
+
+// GetEmployeeParams defines parameters for GetEmployee.
+type GetEmployeeParams struct {
+	// Employee ID
+	ID uint64 `form:"id" json:"id"`
+}
+
+// UpdateEmployeeJSONBody defines parameters for UpdateEmployee.
+type UpdateEmployeeJSONBody = UpdateEmployeeRequest
 
 // CreateEmployeeJSONRequestBody defines body for CreateEmployee for application/json ContentType.
 type CreateEmployeeJSONRequestBody = CreateEmployeeJSONBody
 
+// UpdateEmployeeJSONRequestBody defines body for UpdateEmployee for application/json ContentType.
+type UpdateEmployeeJSONRequestBody = UpdateEmployeeJSONBody
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// Create new employee
-	// (POST /stuff/add)
+	// (POST /staff/add)
 	CreateEmployee(c *gin.Context)
+	// Get all staff
+	// (GET /staff/all)
+	ListEmployees(c *gin.Context)
+	// Delete employee
+	// (DELETE /staff/delete)
+	DeleteEmployee(c *gin.Context, params DeleteEmployeeParams)
+	// Get employee
+	// (GET /staff/get)
+	GetEmployee(c *gin.Context, params GetEmployeeParams)
+	// Recognize employee
+	// (POST /staff/recognize)
+	RecognizeEmployee(c *gin.Context)
+	// Update employee
+	// (PUT /staff/update)
+	UpdateEmployee(c *gin.Context)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -67,6 +160,94 @@ func (siw *ServerInterfaceWrapper) CreateEmployee(c *gin.Context) {
 	siw.Handler.CreateEmployee(c)
 }
 
+// ListEmployees operation middleware
+func (siw *ServerInterfaceWrapper) ListEmployees(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.ListEmployees(c)
+}
+
+// DeleteEmployee operation middleware
+func (siw *ServerInterfaceWrapper) DeleteEmployee(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteEmployeeParams
+
+	// ------------- Required query parameter "id" -------------
+	if paramValue := c.Query("id"); paramValue != "" {
+
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "Query argument id is required, but not found"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "id", c.Request.URL.Query(), &params.ID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": fmt.Sprintf("Invalid format for parameter id: %s", err)})
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.DeleteEmployee(c, params)
+}
+
+// GetEmployee operation middleware
+func (siw *ServerInterfaceWrapper) GetEmployee(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetEmployeeParams
+
+	// ------------- Required query parameter "id" -------------
+	if paramValue := c.Query("id"); paramValue != "" {
+
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "Query argument id is required, but not found"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "id", c.Request.URL.Query(), &params.ID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": fmt.Sprintf("Invalid format for parameter id: %s", err)})
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.GetEmployee(c, params)
+}
+
+// RecognizeEmployee operation middleware
+func (siw *ServerInterfaceWrapper) RecognizeEmployee(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.RecognizeEmployee(c)
+}
+
+// UpdateEmployee operation middleware
+func (siw *ServerInterfaceWrapper) UpdateEmployee(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.UpdateEmployee(c)
+}
+
 // GinServerOptions provides options for the Gin server.
 type GinServerOptions struct {
 	BaseURL     string
@@ -85,7 +266,17 @@ func RegisterHandlersWithOptions(router *gin.Engine, si ServerInterface, options
 		HandlerMiddlewares: options.Middlewares,
 	}
 
-	router.POST(options.BaseURL+"/stuff/add", wrapper.CreateEmployee)
+	router.POST(options.BaseURL+"/staff/add", wrapper.CreateEmployee)
+
+	router.GET(options.BaseURL+"/staff/all", wrapper.ListEmployees)
+
+	router.DELETE(options.BaseURL+"/staff/delete", wrapper.DeleteEmployee)
+
+	router.GET(options.BaseURL+"/staff/get", wrapper.GetEmployee)
+
+	router.POST(options.BaseURL+"/staff/recognize", wrapper.RecognizeEmployee)
+
+	router.PUT(options.BaseURL+"/staff/update", wrapper.UpdateEmployee)
 
 	return router
 }
@@ -93,16 +284,22 @@ func RegisterHandlersWithOptions(router *gin.Engine, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
+	"//9mungABBIAAA==",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

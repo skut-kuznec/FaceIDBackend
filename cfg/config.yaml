@@ -6,6 +6,7 @@ api:
   write_time_out: 20s
   read_head_time_out: 50s
   release: false
+  admin_key: secret-admin-key
 log:
   level: "debug"
   to_file: false
