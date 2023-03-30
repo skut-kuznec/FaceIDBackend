@@ -58,6 +58,7 @@ func (l *Log) LogLevel() zerolog.Level {
 func (l *Log) LogFileName() string {
 	return l.logFile
 }
+
 func (l *Log) LogToFile() bool {
 	return l.logToFile
 }

@@ -9,10 +9,9 @@ import (
 	"FaceIDApp/internal/infrastructure/store/filestore"
 	"FaceIDApp/internal/infrastructure/store/memstore"
 	"FaceIDApp/internal/service"
-	"FaceIDApp/internal/usecases/app/repos/calendarrepo"
-	"FaceIDApp/internal/usecases/app/repos/photorepo"
-	"FaceIDApp/internal/usecases/app/repos/usersrepo"
-
+	"FaceIDApp/internal/usecases/app/repos/imagerepo"
+	"FaceIDApp/internal/usecases/app/repos/stuffrepo"
+	"FaceIDApp/internal/usecases/app/repos/timerecordrepo"
 	"context"
 	"os"
 	"os/signal"
@@ -20,9 +19,9 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-var uStore usersrepo.UserStore
+var uStore stuffrepo.StuffStore
 
-var cStore calendarrepo.CalendarStorage
+var cStore timerecordrepo.TimeRecordStorage
 
 func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
@@ -30,7 +29,7 @@ func main() {
 	if err != nil {
 		log.Fatal().Msgf("%s Loading config", err)
 	}
-	// Проверяем работаем с базой или "memstorage"
+	// Create store
 	switch cfg.DBEnable() {
 	case true:
 		dbCon, err := db.NewPostgres(cfg.DBConfig())
@@ -38,26 +37,31 @@ func main() {
 			log.Fatal().Msgf("not connect to DB | %s", err)
 		}
 		uStore = db.NewUSerStore(dbCon)
-		cStore = db.NewCalendarStore(dbCon)
+		cStore = db.NewTimeRecordStore(dbCon)
 	case false:
 		uStore = memstore.NewUseStore()
 		cStore = memstore.NewCalendarStore()
 	}
 
 	fileStore := filestore.NewPhotoStore(cfg.FileUploadDir())
-	fileRepo := photorepo.NewPhotoRepo(fileStore)
-	calendarRepo := calendarrepo.NewCalendarRepo(cStore)
-	userRepo := usersrepo.NewUsersRepo(uStore)
+	// Create repo
+	fileRepo := imagerepo.NewPhotoRepo(fileStore)
+	calendarRepo := timerecordrepo.NewCalendarRepo(cStore)
+	userRepo := stuffrepo.NewUsersRepo(uStore)
+	// create service from management repository
 	serviceApp := service.NewService(userRepo, calendarRepo, fileRepo)
-
+	// Create handler
 	userHandlers := handler.NewHandler(serviceApp)
+	// Create router
 	router := routergin.NewRouterGin(userHandlers, cfg.APIConfig())
+	// Create & start http server
 	serv := server.NewServer(cfg.APIConfig(), router)
-	serv.Start(serviceApp)
-
+	serv.Start()
 	log.Info().Msg("Program Start")
+	// wait graceful shutdown
 	<-ctx.Done()
 	log.Info().Msg("Program Stop")
+	// stop http server
 	serv.Stop()
 	cancel()
 }

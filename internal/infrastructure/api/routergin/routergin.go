@@ -1,8 +1,8 @@
 package routergin
 
 import (
+	_ "FaceIDApp/docs"
 	"FaceIDApp/internal/config"
-	_ "FaceIDApp/internal/docs"
 	"FaceIDApp/internal/infrastructure/api/handler"
 	"net/http"
 	"time"
@@ -14,14 +14,14 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-type Answer struct {
+type OKAnswer struct {
 	Code    int    `json:"code"  example:"200"`
 	Message string `json:"message" example:"OK"`
 }
 
 // @title Swagger API
 // @version 1.0
-// @description Swagger API for Golang Project Blueprint.
+// @description Swagger API for Golang FaceID.
 // @termsOfService https://swagger.io/terms/
 
 // @contact.name API Support
@@ -41,7 +41,7 @@ func NewRouterGin(h *handler.Handlers, cfg config.API) *RouterGin {
 	ret.Use(defaultStructLogger())
 	ret.Use(gin.Recovery())
 
-	router := &RouterGin{
+	r := &RouterGin{
 		h:   h,
 		cfg: cfg,
 	}
@@ -50,14 +50,21 @@ func NewRouterGin(h *handler.Handlers, cfg config.API) *RouterGin {
 	swag.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	open := ret.RouterGroup
+	open.GET("/health", r.Health)
 
-	open.GET("/health", router.Health)
+	stuff := ret.RouterGroup
+	s := stuff.Group("/api/stuff")
+	s.GET("/all", r.GetAllStaffEndPoint)
+	s.PUT("/update", r.UpdateStaffEndPoint)
+	s.DELETE("/delete", r.DeleteStaffEndPoint)
+	s.POST("/add", r.AddStaffEndPoint)
+	s.GET("/get", r.GetStaffEndPoint)
+	s.POST("/recognize", r.RecognizeStaffEndPoint)
+	s.POST("/find", r.FindStaffEndPoint)
 
-	private := ret.RouterGroup
-	private.GET("/photo", router.GetPhotoInfo)
-	router.Engine = ret
+	r.Engine = ret
 
-	return router
+	return r
 }
 
 func defaultStructLogger() gin.HandlerFunc {
@@ -134,15 +141,11 @@ func structureLogger(logger *zerolog.Logger) gin.HandlerFunc {
 // @Produce json
 // @Success 200
 // @Router /health [get]
-// @Success 200 {object} Answer "OK response"
+// @Success 200 {object} OKAnswer "OK response"
 func (g RouterGin) Health(c *gin.Context) {
-	answer := Answer{
+	answer := OKAnswer{
 		Code:    http.StatusOK,
 		Message: "OK",
 	}
 	c.JSON(answer.Code, answer)
-}
-
-func (g RouterGin) GetPhotoInfo(c *gin.Context) {
-
 }

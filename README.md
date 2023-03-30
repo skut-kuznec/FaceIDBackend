@@ -9,7 +9,7 @@
 
 ```yaml
 ---
-api:
+r:
   host: "127.0.0.1"
   port: 8080
   program_key: "ProgAuthKey"

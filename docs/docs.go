@@ -20,6 +20,29 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/stuff/all": {
+            "get": {
+                "description": "health check",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stuff Api"
+                ],
+                "summary": "health check",
+                "responses": {
+                    "200": {
+                        "description": "OK response",
+                        "schema": {
+                            "$ref": "#/definitions/routergin.StuffAnswer"
+                        }
+                    }
+                }
+            }
+        },
         "/health": {
             "get": {
                 "description": "health check",
@@ -57,6 +80,29 @@ const docTemplate = `{
                     "example": "OK"
                 }
             }
+        },
+        "routergin.StuffAnswer": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "meta": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Сергей"
+                },
+                "photo_id": {
+                    "type": "integer",
+                    "example": 0
+                }
+            }
         }
     }
 }`
@@ -68,7 +114,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Swagger API",
-	Description:      "Swagger API for Golang Project Blueprint.",
+	Description:      "Swagger API for Golang FaceID.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

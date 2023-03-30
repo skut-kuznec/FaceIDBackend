@@ -1,11 +1,12 @@
 package memstore
 
 import (
-	"FaceIDApp/internal/entities/users"
-	"FaceIDApp/internal/entities/workcalendar"
 	"context"
 	"sync"
 	"time"
+
+	"FaceIDApp/internal/entities/stuff"
+	"FaceIDApp/internal/entities/timerecord"
 
 	"github.com/google/uuid"
 )
@@ -13,36 +14,31 @@ import (
 type CalendarStore struct {
 	sync.Mutex
 	// TODO уточнить структуру хранения данных, заменить на актуальную
-	m map[time.Time]workcalendar.WorkCalendar
+	m map[time.Time]timerecord.TimeRecord
 }
 
 func NewCalendarStore() *CalendarStore {
 	return &CalendarStore{
-		m: make(map[time.Time]workcalendar.WorkCalendar),
+		m: make(map[time.Time]timerecord.TimeRecord),
 	}
 }
 
-func (c *CalendarStore) Create(ctx context.Context, cal workcalendar.WorkCalendar) (uuid.UUID, error) {
-	//TODO implement me
+func (c *CalendarStore) Create(ctx context.Context, cal timerecord.TimeRecord) (uuid.UUID, error) {
 	panic("implement me")
 }
 
-func (c *CalendarStore) Read(ctx context.Context, day time.Time) (workcalendar.WorkCalendar, error) {
-	//TODO implement me
+func (c *CalendarStore) Read(ctx context.Context, day time.Time) (timerecord.TimeRecord, error) {
 	panic("implement me")
 }
 
-func (c *CalendarStore) Update(ctx context.Context, day time.Time, cal workcalendar.WorkCalendar) (users.User, error) {
-	//TODO implement me
+func (c *CalendarStore) Update(ctx context.Context, day time.Time, cal timerecord.TimeRecord) (stuff.Stuff, error) {
 	panic("implement me")
 }
 
 func (c *CalendarStore) Delete(ctx context.Context, day time.Time, user uuid.UUID) error {
-	//TODO implement me
 	panic("implement me")
 }
 
-func (c *CalendarStore) ReadAll(ctx context.Context) ([]users.User, error) {
-	//TODO implement me
+func (c *CalendarStore) ReadAll(ctx context.Context) ([]stuff.Stuff, error) {
 	panic("implement me")
 }

@@ -1,12 +1,15 @@
 package server
 
 import (
-	"FaceIDApp/internal/config"
-	"FaceIDApp/internal/service"
 	"context"
 	"fmt"
 	"net/http"
 	"time"
+
+	"FaceIDApp/internal/config"
+	"FaceIDApp/internal/service"
+
+	"github.com/rs/zerolog/log"
 )
 
 type Server struct {
@@ -31,10 +34,14 @@ func NewServer(conf config.API, h http.Handler) *Server {
 
 func (s *Server) Stop() {
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-	s.srv.Shutdown(ctx)
+	err := s.srv.Shutdown(ctx)
+	if err != nil {
+		log.Fatal().Msg("Server not shutdown")
+	}
 	cancel()
 }
-func (s *Server) Start(eap *service.Store) {
-	s.service = eap
+
+func (s *Server) Start() {
+
 	go s.srv.ListenAndServe()
 }
