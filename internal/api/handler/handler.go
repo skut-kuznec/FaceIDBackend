@@ -1,6 +1,10 @@
 package handler
 
 import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 	"github.com/smart48ru/FaceIDApp/internal/api/openapi"
 	"github.com/smart48ru/FaceIDApp/internal/service/imageservice"
 	"github.com/smart48ru/FaceIDApp/internal/service/staffservice"
@@ -25,4 +29,13 @@ func New(
 		staffService:      staffService,
 		timeRecordService: timeRecordService,
 	}
+}
+
+func abortWithError(c *gin.Context, msgText string, err error) {
+	log.Error().Err(err).Msg(msgText)
+
+	ret := openapi.Error{
+		Error: &msgText,
+	}
+	c.AbortWithStatusJSON(http.StatusInternalServerError, ret)
 }

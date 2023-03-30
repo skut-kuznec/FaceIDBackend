@@ -1,6 +1,6 @@
 openapi: "3.0.1"
 info:
-  title: 
+  title: Face Recognition API
   description: This is the final project for GeekBrains course
   version: 1.0.0
   contact:
@@ -172,7 +172,9 @@ paths:
                 $ref: "#/components/schemas/Error"
 components:
   schemas:
-    Any: {}
+    Meta: 
+      type: object
+      additionalProperties: true
     Error:
       type: object
       properties:
@@ -192,7 +194,7 @@ components:
           format: int64
           x-go-name: PhotoID
         meta:
-          $ref: "#/components/schemas/Any"
+          $ref: "#/components/schemas/Meta"
     Employee:
       allOf:
         - $ref: '#/components/schemas/EmployeeBase'

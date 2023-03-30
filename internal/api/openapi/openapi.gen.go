@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -18,12 +19,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Any defines model for Any.
-type Any = interface{}
-
 // CreateEmployeeRequest defines model for CreateEmployeeRequest.
 type CreateEmployeeRequest struct {
-	Meta    Any    `json:"meta"`
+	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
 	PhotoID int64  `json:"photo_id"`
 }
@@ -31,7 +29,7 @@ type CreateEmployeeRequest struct {
 // CreateEmployeeResponse defines model for CreateEmployeeResponse.
 type CreateEmployeeResponse struct {
 	ID      int64  `json:"id"`
-	Meta    Any    `json:"meta"`
+	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
 	PhotoID int64  `json:"photo_id"`
 }
@@ -44,14 +42,14 @@ type DeleteEmployeeResponse struct {
 // Employee defines model for Employee.
 type Employee struct {
 	ID      int64  `json:"id"`
-	Meta    Any    `json:"meta"`
+	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
 	PhotoID int64  `json:"photo_id"`
 }
 
 // EmployeeBase defines model for EmployeeBase.
 type EmployeeBase struct {
-	Meta    Any    `json:"meta"`
+	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
 	PhotoID int64  `json:"photo_id"`
 }
@@ -64,7 +62,7 @@ type Error struct {
 // GetEmployeeResponse defines model for GetEmployeeResponse.
 type GetEmployeeResponse struct {
 	ID      int64  `json:"id"`
-	Meta    Any    `json:"meta"`
+	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
 	PhotoID int64  `json:"photo_id"`
 }
@@ -72,10 +70,15 @@ type GetEmployeeResponse struct {
 // ListEmployeesResponse defines model for ListEmployeesResponse.
 type ListEmployeesResponse = []Employee
 
+// Meta defines model for Meta.
+type Meta struct {
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
 // RecognizeEmployeeResponse defines model for RecognizeEmployeeResponse.
 type RecognizeEmployeeResponse struct {
 	ID      int64  `json:"id"`
-	Meta    Any    `json:"meta"`
+	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
 	PhotoID int64  `json:"photo_id"`
 }
@@ -83,7 +86,7 @@ type RecognizeEmployeeResponse struct {
 // UpdateEmployeeRequest defines model for UpdateEmployeeRequest.
 type UpdateEmployeeRequest struct {
 	ID      int64  `json:"id"`
-	Meta    Any    `json:"meta"`
+	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
 	PhotoID int64  `json:"photo_id"`
 }
@@ -91,7 +94,7 @@ type UpdateEmployeeRequest struct {
 // UpdateEmployeeResponse defines model for UpdateEmployeeResponse.
 type UpdateEmployeeResponse struct {
 	ID      int64  `json:"id"`
-	Meta    Any    `json:"meta"`
+	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
 	PhotoID int64  `json:"photo_id"`
 }
@@ -119,6 +122,59 @@ type CreateEmployeeJSONRequestBody = CreateEmployeeJSONBody
 
 // UpdateEmployeeJSONRequestBody defines body for UpdateEmployee for application/json ContentType.
 type UpdateEmployeeJSONRequestBody = UpdateEmployeeJSONBody
+
+// Getter for additional properties for Meta. Returns the specified
+// element and whether it was found
+func (a Meta) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for Meta
+func (a *Meta) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for Meta to handle AdditionalProperties
+func (a *Meta) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for Meta to handle AdditionalProperties
+func (a Meta) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
@@ -284,22 +340,22 @@ func RegisterHandlersWithOptions(router *gin.Engine, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/+RXTW/jNhD9K8S0hxZQbG+/Djq1aYogQIEtdtPTwihoaSRzK36EHHXrBvrvxVCWbMV0",
-	"km7tYoNeEpniDN/MPM483UNhtbMGDQXI7yEUa9QyPv5gNpDfdxn86FES/qRdYzeIb/CuxUC8QzbN6wry",
-	"d/fwuccKcvhsvvM237qaD4aXMiB0y4TD4KwJ+M899t6usMG0N+etQ08KYzwaQ5B1fEEbh5BDIK9MDV2X",
-	"gce7VnksIX83blxmw0a7eo8FQZfBePRHhp89RKVK/ltZryVBDsrQd9/AeLAyhDV6yODPi9peGKl59ebq",
-	"ALMqE3CXe4Dj8YmckOT/jwXAPOgy6M8+yF0Gbm3J/vYxcfzClolg4us9x1mPM1kP760/jAuH5cNKH7i4",
-	"RjoVFX9WYfQV9p0pQh2eSvTO14hSei9j9t9gYWuj/jrZrfnVlae41Gln/wYa10iZyrJ1YQ3JIsJCLVUD",
-	"ORj7PdNjVljNeSkxFF45UtZADrdrFYQKgtYoKmVkI5y3XGdRWS+uEX+/9FKZIArb+sAcI0UNJxoy+AN9",
-	"6N28mi1mC/ZuHRrpFOTw9Wwxe8WclLSOhZwHklU1l2XkvbN98piDksHclJA/6HPQkxwDXdpyM4SHps+6",
-	"c40qoun8fWAUQy9+ijXp7txN7xT5FuNCX5kYwVeLxdlAbAkQUUxLhNs9Yi2DWCEaUUTbkvP97Qkh9Z0h",
-	"gUCajYj9QXzBrNB2pRoUfKaXBX0Zm0RotZZ+M9ZQGPwgcFdIknXgTvWWSQBLNhkI0TSMrMYEHybtAc5Y",
-	"jnQfSuQitEWBoWqbTzT710hCNo2IuX0072VUAQxr9zTN/lQnxLvspUZCH2KDmuIc9ombK+CGBDncteg3",
-	"MExCiINpesWyveyMo7A9Mgu7w6G+PCMnjsikF0iKPpLnXcftPUxex73B/79jQ0r0vND+8Cwe+EE/HZ/W",
-	"BxLr0YGt24aUk57mXNqLUvZCehf9VJBWqsEJD1bKyMifJxXqdpSfiQjHheULpMMYzPNI0UbZGovVJggx",
-	"VbVnkm9pHf4fy7cj+v1Z8q1P4qcq3/rIHqVDN6497PqvBzoIubItCaVlHYXb0KT5d/ymP2b3QdF6FC9b",
-	"q/7gQ6u3VqMI5KWpUVStKXh977TbtVeeO84mYczM96UydX+akI4xmAIFKY2NMvu4b5VGHw0Cf3H9HQAA",
-	"//9mungABBIAAA==",
+	"H4sIAAAAAAAC/+RYTW/jRgz9KwO2hxZQbG+/Djq1adogQBcb7KanhVHQEiXPdj6UmVG3bqD/XnBkyVYk",
+	"J+nWLhL0ktjSkHwkHzkvuYPM6soaMsFDegc+W5PG+PFHRxjoJ10puyF6S7c1+cAvUKk3BaTv7+BzRwWk",
+	"8Nl852S+9TDvDM/REzTLJhk59JU1nv65x9bbBSma9lY5W5ELkmIamrzHMr4Im4ogBR+cNCU0TQKObmvp",
+	"KIf0fX9wmXQH7eoDZQGaBPrQn5h+ch+VzPlnYZ3GAClIE777BvrA0gQqyUECf56V9syg5qdXFyPMMp+A",
+	"u9wDHMNP1CQg/34ogdd8pkmgDT4qXgLV2gb726ckcs2WE9nE13uOkxboZEOcs26cGHWPx60eubikcCwu",
+	"/iJ978vvO5OBtH+s0jtfPUp0Djf8/fW2U5jnMkhrUF3vJRxcTROZvaXMlkb+dbRZ+7XKj7EKpp39G2jc",
+	"WGkKy9aZNQGzCIs0SgUpGPs9c2qWWc11yclnTlZcR0jhZi29kF6ENYlCGlSicpZLKArrxCXR7+cOpfEi",
+	"s7XzTMwgg+JK/4wZiW2R2Zn44foKEviDnG9dv5otZguOaCsyWElI4evZYvaKyY1hHRkx9wGLYo55HKDK",
+	"tgXl3iL7vMohvbcxoZ0W8uHc5psuZTJtJ6pKySyazj94RtEt88foN73nm+FwMtPig7ZbMYOvFouTgdiS",
+	"IqIYto22Z8QavVgRGZFF25zr/e0RIbUrZgIBmo2Ii0Z8wUzRdiUVCY7pMAtfxm3ja63RbfoeCkMfBe0a",
+	"GbD0vPLeMQlgySYdIZRiZCVN8GGwZ+CE7ZheaBO18HWWkS9q9Uyrf0lBoFIi1vbBuudRTzCs3adh9YeK",
+	"I86yQ02BnI9La4izOyeuLoCXFKRwW5PbQHelQrzhhiOW7FWnv1PrA5dqM5YHyxNy4oDgeoGkaDN52jhu",
+	"53ByHPcUxP+ODVPq6YXuhyfxwHWa6vBtPZJdD17YulZBVujCnFt7lmMr9HbZD5VtIRUNeLCSBiN/HpW6",
+	"26v8REQ4LDZfIB36ZJ5GijpK2diseoIQQ6V7Ivk2rc3/Y/l2QNM/Sb61RXyu8q3N7EE6NP2z+1v/TUcH",
+	"gStbByE1llG4dUuav8f/Dhyy+yjDuhcvW6s28NjqndUkfHBoShJFbTJ+vhftZu2k442zmTBm5rtcmrKN",
+	"JrBiDCYjEaQmJc0+7hupyUUDz3+F/R0AAP//jBhsiUUSAAA=",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file
