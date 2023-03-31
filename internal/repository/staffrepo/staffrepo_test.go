@@ -127,13 +127,13 @@ func TestRepo_Update(t *testing.T) {
 
 func TestRepo_ReadAll(t *testing.T) {
 	r := New()
+	ctx := context.Background()
 	var emploes []domain.Employee
 	u := domain.Employee{
-		ID:      123,
+		ID:      1,
 		Name:    "John Doe",
 		PhotoID: 0,
 	}
-	ctx := context.Background()
 
 	// test creating a new employee
 	_, err := r.Create(ctx, u)
@@ -142,7 +142,7 @@ func TestRepo_ReadAll(t *testing.T) {
 	}
 	emploes = append(emploes, u)
 
-	u.ID = 223
+	u.ID = 2
 	u.Name = "Verlom terkov"
 	u.PhotoID = 1
 	_, err = r.Create(ctx, u)
@@ -150,7 +150,7 @@ func TestRepo_ReadAll(t *testing.T) {
 		t.Fatalf("unexpected error creating employee: %v", err)
 	}
 	emploes = append(emploes, u)
-	u.ID = 2
+	u.ID = 3
 	u.Name = "Piter Parker"
 	u.PhotoID = 12
 
@@ -159,6 +159,7 @@ func TestRepo_ReadAll(t *testing.T) {
 		t.Fatalf("unexpected error creating employee: %v", err)
 	}
 	emploes = append(emploes, u)
+
 	allemp, err := r.ReadAll(ctx)
 	if err != nil {
 		t.Fatalf("unexpected error read all employee: %v", err)

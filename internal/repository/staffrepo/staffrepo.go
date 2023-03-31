@@ -17,6 +17,13 @@ type Repo struct {
 	seq uint64
 }
 
+func (r *Repo) Serialize() (allEmp []domain.Employee) {
+	for _, employee := range r.m {
+		allEmp = append(allEmp, employee)
+	}
+	return allEmp
+}
+
 // Create implements staffservice.StaffRepo
 func (r *Repo) Create(ctx context.Context, u domain.Employee) (uint64, error) {
 	r.mu.Lock()
@@ -26,7 +33,7 @@ func (r *Repo) Create(ctx context.Context, u domain.Employee) (uint64, error) {
 		return 0, ctx.Err()
 	default:
 	}
-	r.seq = +1
+	r.seq += 1
 	u.ID = r.seq
 	r.m[r.seq] = u
 
@@ -76,13 +83,11 @@ func (r *Repo) ReadAll(ctx context.Context) ([]domain.Employee, error) {
 	var employees []domain.Employee
 	select {
 	case <-ctx.Done():
-		return employees, ctx.Err()
+		return []domain.Employee{}, ctx.Err()
 	default:
 	}
 
-	for _, employe := range r.m {
-		employees = append(employees, employe)
-	}
+	employees = r.Serialize()
 
 	return employees, nil
 }
