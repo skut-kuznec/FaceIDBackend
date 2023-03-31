@@ -8,9 +8,8 @@ import (
 )
 
 func TestRepo_Create(t *testing.T) {
-	r := &Repo{
-		m: make(map[int]domain.Employee),
-	}
+	r := New()
+
 	u := domain.Employee{
 		ID:      123,
 		Name:    "John Doe",
@@ -46,9 +45,7 @@ func TestRepo_Create(t *testing.T) {
 }
 
 func TestRepo_Delete(t *testing.T) {
-	r := &Repo{
-		m: make(map[int]domain.Employee),
-	}
+	r := New()
 	u := domain.Employee{
 		ID:      123,
 		Name:    "John Doe",
@@ -69,14 +66,12 @@ func TestRepo_Delete(t *testing.T) {
 	// delete again employee
 	err = r.Delete(ctx, id)
 	if err == nil {
-		t.Fatalf("unexpected error deleting employee: %v", err)
+		t.Fatalf("expected error when deleting already deleted employee, but got nil: %v", err)
 	}
 }
 
 func TestRepo_Read(t *testing.T) {
-	r := &Repo{
-		m: make(map[int]domain.Employee),
-	}
+	r := New()
 	u := domain.Employee{
 		ID:      123,
 		Name:    "John Doe",
@@ -102,9 +97,7 @@ func TestRepo_Read(t *testing.T) {
 }
 
 func TestRepo_Update(t *testing.T) {
-	r := &Repo{
-		m: make(map[int]domain.Employee),
-	}
+	r := New()
 	u := domain.Employee{
 		ID:      123,
 		Name:    "John Doe",
@@ -133,9 +126,7 @@ func TestRepo_Update(t *testing.T) {
 }
 
 func TestRepo_ReadAll(t *testing.T) {
-	r := &Repo{
-		m: make(map[int]domain.Employee),
-	}
+	r := New()
 	var emploes []domain.Employee
 	u := domain.Employee{
 		ID:      123,

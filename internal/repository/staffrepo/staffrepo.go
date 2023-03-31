@@ -12,33 +12,31 @@ import (
 var _ staffservice.StaffRepo = &Repo{}
 
 type Repo struct {
-	sync.Mutex
-	m map[int]domain.Employee
+	mu  sync.Mutex
+	m   map[uint64]domain.Employee
+	seq uint64
 }
 
 // Create implements staffservice.StaffRepo
-func (r *Repo) Create(ctx context.Context, u domain.Employee) (int, error) {
-	r.Lock()
-	defer r.Unlock()
+func (r *Repo) Create(ctx context.Context, u domain.Employee) (uint64, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
 	select {
 	case <-ctx.Done():
 		return 0, ctx.Err()
 	default:
 	}
+	r.seq = +1
+	u.ID = r.seq
+	r.m[r.seq] = u
 
-	_, ok := r.m[u.ID]
-	if ok {
-		return 0, fmt.Errorf("employee id=%d already exists", u.ID)
-	}
-	r.m[u.ID] = u
-
-	return u.ID, nil
+	return r.seq, nil
 }
 
 // Delete implements staffservice.StaffRepo
-func (r *Repo) Delete(ctx context.Context, id int) error {
-	r.Lock()
-	defer r.Unlock()
+func (r *Repo) Delete(ctx context.Context, id uint64) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
 	select {
 	case <-ctx.Done():
 		return ctx.Err()
@@ -55,9 +53,9 @@ func (r *Repo) Delete(ctx context.Context, id int) error {
 }
 
 // Read implements staffservice.StaffRepo
-func (r *Repo) Read(ctx context.Context, id int) (domain.Employee, error) {
-	r.Lock()
-	defer r.Unlock()
+func (r *Repo) Read(ctx context.Context, id uint64) (domain.Employee, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
 	select {
 	case <-ctx.Done():
 		return domain.Employee{}, ctx.Err()
@@ -73,8 +71,8 @@ func (r *Repo) Read(ctx context.Context, id int) (domain.Employee, error) {
 
 // ReadAll implements staffservice.StaffRepo
 func (r *Repo) ReadAll(ctx context.Context) ([]domain.Employee, error) {
-	r.Lock()
-	defer r.Unlock()
+	r.mu.Lock()
+	defer r.mu.Unlock()
 	var employees []domain.Employee
 	select {
 	case <-ctx.Done():
@@ -90,9 +88,9 @@ func (r *Repo) ReadAll(ctx context.Context) ([]domain.Employee, error) {
 }
 
 // Update implements staffservice.StaffRepo
-func (r *Repo) Update(ctx context.Context, id int, u domain.Employee) (domain.Employee, error) {
-	r.Lock()
-	defer r.Unlock()
+func (r *Repo) Update(ctx context.Context, id uint64, u domain.Employee) (domain.Employee, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
 	select {
 	case <-ctx.Done():
 		return domain.Employee{}, ctx.Err()
@@ -106,6 +104,6 @@ func (r *Repo) Update(ctx context.Context, id int, u domain.Employee) (domain.Em
 
 func New() *Repo {
 	return &Repo{
-		m: make(map[int]domain.Employee),
+		m: make(map[uint64]domain.Employee),
 	}
 }
