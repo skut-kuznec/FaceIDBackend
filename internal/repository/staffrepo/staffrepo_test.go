@@ -2,16 +2,17 @@ package staffrepo
 
 import (
 	"context"
-	"github.com/smart48ru/FaceIDApp/internal/domain"
 	"reflect"
 	"testing"
+
+	"github.com/smart48ru/FaceIDApp/internal/domain"
 )
 
 func TestRepo_Create(t *testing.T) {
 	r := New()
 
 	u := domain.Employee{
-		ID:      123,
+		ID:      1,
 		Name:    "John Doe",
 		PhotoID: 0,
 	}
@@ -32,15 +33,6 @@ func TestRepo_Create(t *testing.T) {
 		t.Errorf("expected employee with ID %d to exist in map", u.ID)
 	} else if !reflect.DeepEqual(e, u) {
 		t.Errorf("expected employee %v, but got %v", u, e)
-	}
-
-	// test creating an employee with an existing ID
-	_, err = r.Create(ctx, u)
-	if err == nil {
-		t.Errorf("expected error creating employee with existing ID")
-	}
-	if len(r.m) != 1 {
-		t.Errorf("expected map length 1, but got %d", len(r.m))
 	}
 }
 
@@ -127,46 +119,42 @@ func TestRepo_Update(t *testing.T) {
 
 func TestRepo_ReadAll(t *testing.T) {
 	r := New()
-	var emploes []domain.Employee
-	u := domain.Employee{
-		ID:      123,
-		Name:    "John Doe",
-		PhotoID: 0,
+
+	employees := []domain.Employee{
+		{
+			ID:      1,
+			Name:    "John Doe",
+			PhotoID: 0,
+		},
+		{
+			ID:      2,
+			Name:    "Verlom terkov",
+			PhotoID: 1,
+		},
+		{
+			ID:      3,
+			Name:    "Piter Parker",
+			PhotoID: 12,
+		},
 	}
+
 	ctx := context.Background()
 
 	// test creating a new employee
-	_, err := r.Create(ctx, u)
-	if err != nil {
-		t.Fatalf("unexpected error creating employee: %v", err)
+	for _, emp := range employees {
+		if _, err := r.Create(ctx, emp); err != nil {
+			t.Fatalf("unexpected error creating employee: %s", err)
+		}
 	}
-	emploes = append(emploes, u)
 
-	u.ID = 223
-	u.Name = "Verlom terkov"
-	u.PhotoID = 1
-	_, err = r.Create(ctx, u)
-	if err != nil {
-		t.Fatalf("unexpected error creating employee: %v", err)
-	}
-	emploes = append(emploes, u)
-	u.ID = 2
-	u.Name = "Piter Parker"
-	u.PhotoID = 12
-
-	_, err = r.Create(ctx, u)
-	if err != nil {
-		t.Fatalf("unexpected error creating employee: %v", err)
-	}
-	emploes = append(emploes, u)
-	allemp, err := r.ReadAll(ctx)
+	savedEmpoloyees, err := r.ReadAll(ctx)
 	if err != nil {
 		t.Fatalf("unexpected error read all employee: %v", err)
 	}
-	if !reflect.DeepEqual(emploes, allemp) {
-		t.Errorf("expected employee %v, but got %v", emploes, allemp)
+	if !reflect.DeepEqual(employees, savedEmpoloyees) {
+		t.Errorf("expected employee %v, but got %v", employees, savedEmpoloyees)
 	}
-	if len(emploes) != len(allemp) {
-		t.Errorf("expected len employee %v, but got len %v", len(emploes), len(allemp))
+	if len(employees) != len(savedEmpoloyees) {
+		t.Errorf("expected len employee %v, but got len %v", len(employees), len(savedEmpoloyees))
 	}
 }

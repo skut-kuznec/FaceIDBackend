@@ -26,7 +26,7 @@ func (r *Repo) Create(ctx context.Context, u domain.Employee) (uint64, error) {
 		return 0, ctx.Err()
 	default:
 	}
-	r.seq = +1
+	r.seq += 1
 	u.ID = r.seq
 	r.m[r.seq] = u
 
