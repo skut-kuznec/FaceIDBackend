@@ -170,6 +170,94 @@ paths:
             application/json:
               schema: 
                 $ref: "#/components/schemas/Error"
+  /image/upload:
+    post:
+      summary: Upload image on server
+      tags: 
+        - Staff
+      operationId: UploadImage
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: succesful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadImageResponse"
+        500:
+          description: any error (for mobile contract)
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Error"
+  /images/file:
+    get:
+      summary: Download image from server
+      tags: 
+        - Staff
+      operationId: DownloadImage
+      parameters:
+        - name: id
+          in: query
+          required: true
+          x-go-name: ID
+          schema:
+            type: integer
+            format: uint64
+          description: Image ID
+      responses:
+        200:
+          description: succesful
+          content:
+            multipart/form-data:
+              schema:
+                type: object
+                properties:
+                  file:
+                    type: string
+                    format: binary
+        500:
+          description: any error (for mobile contract)
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Error"
+  /images/data:
+    get:
+      summary: Download image from server
+      tags: 
+        - Staff
+      operationId: GetImageDescription
+      parameters:
+        - name: id
+          in: query
+          required: true
+          x-go-name: ID
+          schema:
+            type: integer
+            format: uint64
+          description: Image ID
+      responses:
+        200:
+          description: succesful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetImageDescriptionResponse"
+        500:
+          description: any error (for mobile contract)
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     Meta: 
@@ -206,6 +294,18 @@ components:
               type: integer
               format: int64
               x-go-name: ID
+    Image:
+      type: object
+      required:
+        - id
+        - path
+      properties:
+        id:
+          type: integer
+          format: int64
+          x-go-name: ID
+        path:
+          type: string
 
     CreateEmployeeRequest:
       allOf:
@@ -234,5 +334,11 @@ components:
       allOf:
         - $ref: '#/components/schemas/Employee'
     RecognizeEmployeeResponse:
-       allOf:
+      allOf:
         - $ref: '#/components/schemas/Employee'
+    UploadImageResponse:
+        allOf:
+        - $ref: '#/components/schemas/Image'
+    GetImageDescriptionResponse:
+        allOf:
+        - $ref: '#/components/schemas/Image'

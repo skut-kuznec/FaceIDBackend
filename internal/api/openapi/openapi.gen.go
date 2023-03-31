@@ -67,6 +67,18 @@ type GetEmployeeResponse struct {
 	PhotoID int64  `json:"photo_id"`
 }
 
+// GetImageDescriptionResponse defines model for GetImageDescriptionResponse.
+type GetImageDescriptionResponse struct {
+	ID   int64  `json:"id"`
+	Path string `json:"path"`
+}
+
+// Image defines model for Image.
+type Image struct {
+	ID   int64  `json:"id"`
+	Path string `json:"path"`
+}
+
 // ListEmployeesResponse defines model for ListEmployeesResponse.
 type ListEmployeesResponse = []Employee
 
@@ -97,6 +109,24 @@ type UpdateEmployeeResponse struct {
 	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
 	PhotoID int64  `json:"photo_id"`
+}
+
+// UploadImageResponse defines model for UploadImageResponse.
+type UploadImageResponse struct {
+	ID   int64  `json:"id"`
+	Path string `json:"path"`
+}
+
+// GetImageDescriptionParams defines parameters for GetImageDescription.
+type GetImageDescriptionParams struct {
+	// Image ID
+	ID uint64 `form:"id" json:"id"`
+}
+
+// DownloadImageParams defines parameters for DownloadImage.
+type DownloadImageParams struct {
+	// Image ID
+	ID uint64 `form:"id" json:"id"`
 }
 
 // CreateEmployeeJSONBody defines parameters for CreateEmployee.
@@ -178,6 +208,15 @@ func (a Meta) MarshalJSON() ([]byte, error) {
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// Upload image on server
+	// (POST /image/upload)
+	UploadImage(c *gin.Context)
+	// Download image from server
+	// (GET /images/data)
+	GetImageDescription(c *gin.Context, params GetImageDescriptionParams)
+	// Download image from server
+	// (GET /images/file)
+	DownloadImage(c *gin.Context, params DownloadImageParams)
 	// Create new employee
 	// (POST /staff/add)
 	CreateEmployee(c *gin.Context)
@@ -205,6 +244,74 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(c *gin.Context)
+
+// UploadImage operation middleware
+func (siw *ServerInterfaceWrapper) UploadImage(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.UploadImage(c)
+}
+
+// GetImageDescription operation middleware
+func (siw *ServerInterfaceWrapper) GetImageDescription(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetImageDescriptionParams
+
+	// ------------- Required query parameter "id" -------------
+	if paramValue := c.Query("id"); paramValue != "" {
+
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "Query argument id is required, but not found"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "id", c.Request.URL.Query(), &params.ID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": fmt.Sprintf("Invalid format for parameter id: %s", err)})
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.GetImageDescription(c, params)
+}
+
+// DownloadImage operation middleware
+func (siw *ServerInterfaceWrapper) DownloadImage(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DownloadImageParams
+
+	// ------------- Required query parameter "id" -------------
+	if paramValue := c.Query("id"); paramValue != "" {
+
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "Query argument id is required, but not found"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "id", c.Request.URL.Query(), &params.ID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": fmt.Sprintf("Invalid format for parameter id: %s", err)})
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.DownloadImage(c, params)
+}
 
 // CreateEmployee operation middleware
 func (siw *ServerInterfaceWrapper) CreateEmployee(c *gin.Context) {
@@ -322,6 +429,12 @@ func RegisterHandlersWithOptions(router *gin.Engine, si ServerInterface, options
 		HandlerMiddlewares: options.Middlewares,
 	}
 
+	router.POST(options.BaseURL+"/image/upload", wrapper.UploadImage)
+
+	router.GET(options.BaseURL+"/images/data", wrapper.GetImageDescription)
+
+	router.GET(options.BaseURL+"/images/file", wrapper.DownloadImage)
+
 	router.POST(options.BaseURL+"/staff/add", wrapper.CreateEmployee)
 
 	router.GET(options.BaseURL+"/staff/all", wrapper.ListEmployees)
@@ -340,22 +453,24 @@ func RegisterHandlersWithOptions(router *gin.Engine, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file
