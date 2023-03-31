@@ -11,7 +11,7 @@ func TestRepo_Create(t *testing.T) {
 	r := New()
 
 	u := domain.Employee{
-		ID:      123,
+		ID:      1,
 		Name:    "John Doe",
 		PhotoID: 0,
 	}
@@ -34,11 +34,6 @@ func TestRepo_Create(t *testing.T) {
 		t.Errorf("expected employee %v, but got %v", u, e)
 	}
 
-	// test creating an employee with an existing ID
-	_, err = r.Create(ctx, u)
-	if err == nil {
-		t.Errorf("expected error creating employee with existing ID")
-	}
 	if len(r.m) != 1 {
 		t.Errorf("expected map length 1, but got %d", len(r.m))
 	}

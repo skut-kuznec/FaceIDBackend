@@ -3,6 +3,7 @@ package staffrepo
 import (
 	"context"
 	"fmt"
+	"sort"
 	"sync"
 
 	"github.com/smart48ru/FaceIDApp/internal/domain"
@@ -17,10 +18,17 @@ type Repo struct {
 	seq uint64
 }
 
-func (r *Repo) Serialize() (allEmp []domain.Employee) {
+func (r *Repo) Serialize() []domain.Employee {
+	if len(r.m) == 0 {
+		return []domain.Employee{}
+	}
+	allEmp := make([]domain.Employee, 0, len(r.m))
 	for _, employee := range r.m {
 		allEmp = append(allEmp, employee)
 	}
+	sort.Slice(allEmp, func(i, j int) bool {
+		return allEmp[i].ID < allEmp[j].ID
+	})
 	return allEmp
 }
 
