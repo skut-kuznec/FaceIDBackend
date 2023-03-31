@@ -25,7 +25,7 @@ func main() {
 
 	cfg, err := config.NewConfig()
 	if err != nil {
-		log.Fatal().Msgf("%s Loading config", err)
+		log.Fatal().Msgf("%s Loading config", err) //nolint: gocritic
 	}
 
 	// Initializing repositories.

@@ -6,6 +6,6 @@ import (
 )
 
 // DeleteEmployee implements openapi.ServerInterface
-func (*Handlers) DeleteEmployee(c *gin.Context, params openapi.DeleteEmployeeParams) {
+func (h *Handlers) DeleteEmployee(c *gin.Context, params openapi.DeleteEmployeeParams) {
 	panic("unimplemented")
 }

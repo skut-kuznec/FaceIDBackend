@@ -10,8 +10,7 @@ import (
 
 var _ imageservice.ImageRepo = &Repo{}
 
-type Repo struct {
-}
+type Repo struct{}
 
 // Create implements imageservice.ImageRepo
 func (r *Repo) Create(ctx context.Context, ph domain.Image) (int, error) {

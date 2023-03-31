@@ -10,8 +10,7 @@ import (
 
 var _ timerecordservice.TimeRecordRepo = &Repo{}
 
-type Repo struct {
-}
+type Repo struct{}
 
 // Create implements timerecordservice.TimeRecordRepo
 func (*Repo) Create(ctx context.Context, c domain.TimeRecord) (int, error) {
