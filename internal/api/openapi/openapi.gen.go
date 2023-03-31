@@ -13,11 +13,32 @@ import (
 	"net/url"
 	"path"
 	"strings"
+	"time"
 
 	"github.com/deepmap/oapi-codegen/pkg/runtime"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/gin-gonic/gin"
 )
+
+// AddThirdpartyRequest defines model for AddThirdpartyRequest.
+type AddThirdpartyRequest struct {
+	Url string `json:"url"`
+}
+
+// AddTimerecordRequest defines model for AddTimerecordRequest.
+type AddTimerecordRequest struct {
+	Employee  int64           `json:"employee"`
+	EntryTime TimerecordTime  `json:"entry_time"`
+	ExitTime  *TimerecordTime `json:"exit_time,omitempty"`
+}
+
+// AddTimerecordResponse defines model for AddTimerecordResponse.
+type AddTimerecordResponse struct {
+	Employee  int64           `json:"employee"`
+	EntryTime TimerecordTime  `json:"entry_time"`
+	ExitTime  *TimerecordTime `json:"exit_time,omitempty"`
+	ID        int64           `json:"id"`
+}
 
 // CreateEmployeeRequest defines model for CreateEmployeeRequest.
 type CreateEmployeeRequest struct {
@@ -79,8 +100,22 @@ type Image struct {
 	Path string `json:"path"`
 }
 
+// LastTimerecordByEmploeeIDResponse defines model for LastTimerecordByEmploeeIDResponse.
+type LastTimerecordByEmploeeIDResponse struct {
+	Employee  int64           `json:"employee"`
+	EntryTime TimerecordTime  `json:"entry_time"`
+	ExitTime  *TimerecordTime `json:"exit_time,omitempty"`
+	ID        int64           `json:"id"`
+}
+
 // ListEmployeesResponse defines model for ListEmployeesResponse.
 type ListEmployeesResponse = []Employee
+
+// ListThirdpartyResponse defines model for ListThirdpartyResponse.
+type ListThirdpartyResponse = []string
+
+// ListTimerecordResponse defines model for ListTimerecordResponse.
+type ListTimerecordResponse = []Timerecord
 
 // Meta defines model for Meta.
 type Meta struct {
@@ -93,6 +128,27 @@ type RecognizeEmployeeResponse struct {
 	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
 	PhotoID int64  `json:"photo_id"`
+}
+
+// Timerecord defines model for Timerecord.
+type Timerecord struct {
+	Employee  int64           `json:"employee"`
+	EntryTime TimerecordTime  `json:"entry_time"`
+	ExitTime  *TimerecordTime `json:"exit_time,omitempty"`
+	ID        int64           `json:"id"`
+}
+
+// TimerecordBase defines model for TimerecordBase.
+type TimerecordBase struct {
+	Employee  int64           `json:"employee"`
+	EntryTime TimerecordTime  `json:"entry_time"`
+	ExitTime  *TimerecordTime `json:"exit_time,omitempty"`
+}
+
+// TimerecordTime defines model for TimerecordTime.
+type TimerecordTime struct {
+	PhotoId uint64    `json:"photo_id"`
+	Time    time.Time `json:"time"`
 }
 
 // UpdateEmployeeRequest defines model for UpdateEmployeeRequest.
@@ -147,11 +203,29 @@ type GetEmployeeParams struct {
 // UpdateEmployeeJSONBody defines parameters for UpdateEmployee.
 type UpdateEmployeeJSONBody = UpdateEmployeeRequest
 
+// AddThirdpartyJSONBody defines parameters for AddThirdparty.
+type AddThirdpartyJSONBody = AddThirdpartyRequest
+
+// AddTimerecordJSONBody defines parameters for AddTimerecord.
+type AddTimerecordJSONBody = AddTimerecordRequest
+
+// LastTimerecordByEmploeeIDParams defines parameters for LastTimerecordByEmploeeID.
+type LastTimerecordByEmploeeIDParams struct {
+	// Timerecord ID
+	ID uint64 `form:"id" json:"id"`
+}
+
 // CreateEmployeeJSONRequestBody defines body for CreateEmployee for application/json ContentType.
 type CreateEmployeeJSONRequestBody = CreateEmployeeJSONBody
 
 // UpdateEmployeeJSONRequestBody defines body for UpdateEmployee for application/json ContentType.
 type UpdateEmployeeJSONRequestBody = UpdateEmployeeJSONBody
+
+// AddThirdpartyJSONRequestBody defines body for AddThirdparty for application/json ContentType.
+type AddThirdpartyJSONRequestBody = AddThirdpartyJSONBody
+
+// AddTimerecordJSONRequestBody defines body for AddTimerecord for application/json ContentType.
+type AddTimerecordJSONRequestBody = AddTimerecordJSONBody
 
 // Getter for additional properties for Meta. Returns the specified
 // element and whether it was found
@@ -235,6 +309,21 @@ type ServerInterface interface {
 	// Update employee
 	// (PUT /staff/update)
 	UpdateEmployee(c *gin.Context)
+	// Add new thirdparty link
+	// (POST /thirdparty/add)
+	AddThirdparty(c *gin.Context)
+	// Get thirdparty list of links
+	// (GET /thirdparty/all)
+	ListThirdparty(c *gin.Context)
+	// Save timerecord event about staff
+	// (POST /timerecord/add)
+	AddTimerecord(c *gin.Context)
+	// Get list of all timerecord events
+	// (GET /timerecord/all)
+	ListTimerecord(c *gin.Context)
+	// Get employee
+	// (GET /timerecord/lastbyemployee)
+	LastTimerecordByEmploeeID(c *gin.Context, params LastTimerecordByEmploeeIDParams)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -411,6 +500,75 @@ func (siw *ServerInterfaceWrapper) UpdateEmployee(c *gin.Context) {
 	siw.Handler.UpdateEmployee(c)
 }
 
+// AddThirdparty operation middleware
+func (siw *ServerInterfaceWrapper) AddThirdparty(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.AddThirdparty(c)
+}
+
+// ListThirdparty operation middleware
+func (siw *ServerInterfaceWrapper) ListThirdparty(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.ListThirdparty(c)
+}
+
+// AddTimerecord operation middleware
+func (siw *ServerInterfaceWrapper) AddTimerecord(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.AddTimerecord(c)
+}
+
+// ListTimerecord operation middleware
+func (siw *ServerInterfaceWrapper) ListTimerecord(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.ListTimerecord(c)
+}
+
+// LastTimerecordByEmploeeID operation middleware
+func (siw *ServerInterfaceWrapper) LastTimerecordByEmploeeID(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params LastTimerecordByEmploeeIDParams
+
+	// ------------- Required query parameter "id" -------------
+	if paramValue := c.Query("id"); paramValue != "" {
+
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "Query argument id is required, but not found"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "id", c.Request.URL.Query(), &params.ID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": fmt.Sprintf("Invalid format for parameter id: %s", err)})
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.LastTimerecordByEmploeeID(c, params)
+}
+
 // GinServerOptions provides options for the Gin server.
 type GinServerOptions struct {
 	BaseURL     string
@@ -447,30 +605,46 @@ func RegisterHandlersWithOptions(router *gin.Engine, si ServerInterface, options
 
 	router.PUT(options.BaseURL+"/staff/update", wrapper.UpdateEmployee)
 
+	router.POST(options.BaseURL+"/thirdparty/add", wrapper.AddThirdparty)
+
+	router.GET(options.BaseURL+"/thirdparty/all", wrapper.ListThirdparty)
+
+	router.POST(options.BaseURL+"/timerecord/add", wrapper.AddTimerecord)
+
+	router.GET(options.BaseURL+"/timerecord/all", wrapper.ListTimerecord)
+
+	router.GET(options.BaseURL+"/timerecord/lastbyemployee", wrapper.LastTimerecordByEmploeeID)
+
 	return router
 }
 
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

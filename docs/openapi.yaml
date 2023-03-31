@@ -11,9 +11,9 @@ tags:
   description: Operation about images
 - name: Staff
   description: Operation with staff
-- name: Thrirparty
+- name: Thirdparty
   description: Some strange functions
-- name: Timerecords
+- name: Timerecord
   description: Recording staff apperance timelines
 
 paths:
@@ -75,7 +75,7 @@ paths:
       operationId: ListEmployees
       responses:
         200:
-          description: succesful
+          description: success
           content:
             application/json:
               schema:
@@ -103,7 +103,7 @@ paths:
           description: Employee ID
       responses:
         200:
-          description: succesful
+          description: success
           content:
             application/json:
               schema:
@@ -131,7 +131,7 @@ paths:
           description: Employee ID
       responses:
         200:
-          description: succesful
+          description: success
           content:
             application/json:
               schema:
@@ -159,7 +159,7 @@ paths:
                   format: binary
       responses:
         200:
-          description: succesful
+          description: success
           content:
             application/json:
               schema:
@@ -174,7 +174,7 @@ paths:
     post:
       summary: Upload image on server
       tags: 
-        - Staff
+        - Image
       operationId: UploadImage
       requestBody:
         content:
@@ -187,7 +187,7 @@ paths:
                   format: binary
       responses:
         200:
-          description: succesful
+          description: success
           content:
             application/json:
               schema:
@@ -202,7 +202,7 @@ paths:
     get:
       summary: Download image from server
       tags: 
-        - Staff
+        - Image
       operationId: DownloadImage
       parameters:
         - name: id
@@ -215,7 +215,7 @@ paths:
           description: Image ID
       responses:
         200:
-          description: succesful
+          description: success
           content:
             multipart/form-data:
               schema:
@@ -234,7 +234,7 @@ paths:
     get:
       summary: Download image from server
       tags: 
-        - Staff
+        - Image
       operationId: GetImageDescription
       parameters:
         - name: id
@@ -247,11 +247,128 @@ paths:
           description: Image ID
       responses:
         200:
-          description: succesful
+          description: success
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/GetImageDescriptionResponse"
+        500:
+          description: any error (for mobile contract)
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Error"
+  /thirdparty/add:
+    post:
+      summary: Add new thirdparty link
+      tags: 
+        - Thirdparty
+      operationId: AddThirdparty
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/AddThirdpartyRequest"
+      responses:
+        200:
+          description: thirdparty has been added
+          content:
+            application/json:
+              schema:
+                type: string
+                example: http://localhost:8080/api/thirdparty/check
+        500:
+          description: any error (for mobile contract)
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Error"
+  /thirdparty/all:
+    get:
+      summary: Get thirdparty list of links
+      tags: 
+        - Thirdparty
+      operationId: ListThirdparty
+      responses:
+        200:
+          description: thirdparty has been added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListThirdpartyResponse"
+        500:
+          description: any error (for mobile contract)
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Error"
+  /timerecord/add:
+    post:
+      summary: Save timerecord event about staff
+      tags:
+        - Timerecord
+      operationId: AddTimerecord
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/AddTimerecordRequest"
+      responses:
+        200:
+          description: timerecord has been saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddTimerecordResponse"
+        500:
+          description: any error (for mobile contract)
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Error"
+  /timerecord/all:
+    get:
+      summary: Get list of all timerecord events
+      tags:
+        - Timerecord
+      operationId: ListTimerecord
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListTimerecordResponse"
+        500:
+          description: any error (for mobile contract)
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Error"
+  /timerecord/lastbyemployee:
+    get:
+      summary: Get employee
+      tags: 
+        - Timerecord
+      operationId: LastTimerecordByEmploeeID
+      parameters:
+        - name: id
+          in: query
+          required: true
+          x-go-name: ID
+          schema:
+            type: integer
+            format: uint64
+          description: Timerecord ID
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LastTimerecordByEmploeeIDResponse"
         500:
           description: any error (for mobile contract)
           content:
@@ -342,3 +459,65 @@ components:
     GetImageDescriptionResponse:
         allOf:
         - $ref: '#/components/schemas/Image'
+    AddThirdpartyRequest:
+      type: object
+      required:
+        - url
+      properties:
+        url:
+          type: string
+          example: http://localhost:8080/api/thirdparty/check
+    ListThirdpartyResponse:
+      type: array
+      items:
+        type: string
+        example: http://localhost:8080/api/thirdparty/check
+    TimerecordTime:
+      type: object
+      required:
+        - time
+        - photo_id
+      properties:
+        time:
+          type: string
+          format: date-time
+        photo_id:
+          type: integer
+          format: uint64
+    TimerecordBase:
+      type: object
+      required:
+        - employee
+        - entry_time
+      properties:
+        employee:
+          type: integer
+          format: int64
+        entry_time:
+          $ref: "#/components/schemas/TimerecordTime"
+        exit_time:
+          $ref: "#/components/schemas/TimerecordTime"
+    Timerecord:
+      allOf:
+        - $ref: '#/components/schemas/TimerecordBase'
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+              format: int64
+              x-go-name: ID
+    AddTimerecordRequest:
+      allOf:
+        - $ref: '#/components/schemas/TimerecordBase'
+    AddTimerecordResponse:
+      allOf:
+        - $ref: '#/components/schemas/Timerecord'
+    ListTimerecordResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/Timerecord'
+    LastTimerecordByEmploeeIDResponse:
+      allOf:
+        - $ref: '#/components/schemas/Timerecord'
