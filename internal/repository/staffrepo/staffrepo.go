@@ -6,11 +6,11 @@ import (
 	"sort"
 	"sync"
 
+	"github.com/smart48ru/FaceIDApp/internal/app/staffapp"
 	"github.com/smart48ru/FaceIDApp/internal/domain"
-	"github.com/smart48ru/FaceIDApp/internal/service/staffservice"
 )
 
-var _ staffservice.StaffRepo = &Repo{}
+var _ staffapp.StaffRepo = &Repo{}
 
 type Repo struct {
 	mu  sync.Mutex
@@ -18,8 +18,14 @@ type Repo struct {
 	seq uint64
 }
 
-// Create implements staffservice.StaffRepo
-func (r *Repo) Create(ctx context.Context, u domain.Employee) (uint64, error) {
+func New() *Repo {
+	return &Repo{
+		m: make(map[uint64]domain.Employee),
+	}
+}
+
+// Save implements staffservice.StaffRepo
+func (r *Repo) Save(ctx context.Context, u domain.Employee) (uint64, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	select {
@@ -53,8 +59,8 @@ func (r *Repo) Delete(ctx context.Context, id uint64) error {
 	return nil
 }
 
-// Read implements staffservice.StaffRepo
-func (r *Repo) Read(ctx context.Context, id uint64) (domain.Employee, error) {
+// Get implements staffservice.StaffRepo
+func (r *Repo) Get(ctx context.Context, id uint64) (domain.Employee, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	select {
@@ -70,8 +76,8 @@ func (r *Repo) Read(ctx context.Context, id uint64) (domain.Employee, error) {
 	return domain.Employee{}, fmt.Errorf("employee id=%d not found", id)
 }
 
-// ReadAll implements staffservice.StaffRepo
-func (r *Repo) ReadAll(ctx context.Context) ([]domain.Employee, error) {
+// List implements staffservice.StaffRepo
+func (r *Repo) List(ctx context.Context) ([]domain.Employee, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -93,7 +99,7 @@ func (r *Repo) ReadAll(ctx context.Context) ([]domain.Employee, error) {
 }
 
 // Update implements staffservice.StaffRepo
-func (r *Repo) Update(ctx context.Context, id uint64, u domain.Employee) (domain.Employee, error) {
+func (r *Repo) Update(ctx context.Context, u domain.Employee) (domain.Employee, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	select {
@@ -102,13 +108,10 @@ func (r *Repo) Update(ctx context.Context, id uint64, u domain.Employee) (domain
 	default:
 	}
 
-	r.m[id] = u
+	if _, ok := r.m[u.ID]; !ok {
+		return domain.Employee{}, fmt.Errorf("employee with id = %d not found", u.ID)
+	}
+	r.m[u.ID] = u
 
 	return u, nil
-}
-
-func New() *Repo {
-	return &Repo{
-		m: make(map[uint64]domain.Employee),
-	}
 }

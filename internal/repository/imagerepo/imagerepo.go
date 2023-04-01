@@ -2,31 +2,31 @@ package imagerepo
 
 import (
 	"context"
+	"io"
 
-	"github.com/google/uuid"
+	"github.com/smart48ru/FaceIDApp/internal/app/imageapp"
 	"github.com/smart48ru/FaceIDApp/internal/domain"
-	"github.com/smart48ru/FaceIDApp/internal/service/imageservice"
 )
 
-var _ imageservice.ImageRepo = &Repo{}
+var _ imageapp.ImageRepo = &Repo{}
 
 type Repo struct{}
 
-// Create implements imageservice.ImageRepo
-func (r *Repo) Create(ctx context.Context, ph domain.Image) (int, error) {
-	panic("unimplemented")
-}
-
-// Delete implements imageservice.ImageRepo
-func (r *Repo) Delete(ctx context.Context, d uuid.UUID) error {
-	panic("unimplemented")
-}
-
-// Read implements imageservice.ImageRepo
-func (r *Repo) Read(ctx context.Context, id int) (domain.Image, error) {
-	panic("unimplemented")
-}
-
 func New() *Repo {
 	return &Repo{}
+}
+
+// Get implements imageapp.ImageRepo
+func (re *Repo) Get(ctx context.Context, id uint64) (io.Reader, error) {
+	panic("unimplemented")
+}
+
+// GetDescByID implements imageapp.ImageRepo
+func (re *Repo) GetDescByID(ctx context.Context, in uint64) (domain.Image, error) {
+	panic("unimplemented")
+}
+
+// Save implements imageapp.ImageRepo
+func (re *Repo) Save(ctx context.Context, r io.Reader) (domain.Image, error) {
+	panic("unimplemented")
 }

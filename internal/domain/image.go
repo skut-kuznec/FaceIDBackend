@@ -1,6 +1,6 @@
 package domain
 
 type Image struct {
-	ID   int    `json:"id"`
-	Path string `json:"path"`
+	ID   uint64
+	Path string
 }

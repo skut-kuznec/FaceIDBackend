@@ -6,28 +6,28 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 	"github.com/smart48ru/FaceIDApp/internal/api/openapi"
-	"github.com/smart48ru/FaceIDApp/internal/service/imageservice"
-	"github.com/smart48ru/FaceIDApp/internal/service/staffservice"
-	"github.com/smart48ru/FaceIDApp/internal/service/timerecordservice"
+	"github.com/smart48ru/FaceIDApp/internal/app/imageapp"
+	"github.com/smart48ru/FaceIDApp/internal/app/staffapp"
+	"github.com/smart48ru/FaceIDApp/internal/app/timerecordapp"
 )
 
 var _ openapi.ServerInterface = &Handlers{}
 
 type Handlers struct {
-	imageService      *imageservice.Service
-	staffService      *staffservice.Service
-	timeRecordService *timerecordservice.Service
+	imageApp      *imageapp.App
+	staffApp      *staffapp.App
+	timeRecordApp *timerecordapp.App
 }
 
 func New(
-	imageService *imageservice.Service,
-	staffService *staffservice.Service,
-	timeRecordService *timerecordservice.Service,
+	imageApp *imageapp.App,
+	staffApp *staffapp.App,
+	timeRecordApp *timerecordapp.App,
 ) *Handlers {
 	return &Handlers{
-		imageService:      imageService,
-		staffService:      staffService,
-		timeRecordService: timeRecordService,
+		imageApp:      imageApp,
+		staffApp:      staffApp,
+		timeRecordApp: timeRecordApp,
 	}
 }
 

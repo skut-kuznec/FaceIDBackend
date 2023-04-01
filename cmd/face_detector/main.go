@@ -10,13 +10,13 @@ import (
 	"github.com/smart48ru/FaceIDApp/internal/api/handler"
 	"github.com/smart48ru/FaceIDApp/internal/api/router"
 	"github.com/smart48ru/FaceIDApp/internal/api/server"
+	"github.com/smart48ru/FaceIDApp/internal/app/imageapp"
+	"github.com/smart48ru/FaceIDApp/internal/app/staffapp"
+	"github.com/smart48ru/FaceIDApp/internal/app/timerecordapp"
 	"github.com/smart48ru/FaceIDApp/internal/config"
 	"github.com/smart48ru/FaceIDApp/internal/repository/imagerepo"
 	"github.com/smart48ru/FaceIDApp/internal/repository/staffrepo"
 	"github.com/smart48ru/FaceIDApp/internal/repository/timerecordrepo"
-	"github.com/smart48ru/FaceIDApp/internal/service/imageservice"
-	"github.com/smart48ru/FaceIDApp/internal/service/staffservice"
-	"github.com/smart48ru/FaceIDApp/internal/service/timerecordservice"
 )
 
 func main() {
@@ -33,12 +33,12 @@ func main() {
 	imageRepo := imagerepo.New()
 	timeRecordRepo := timerecordrepo.New()
 
-	// Initializing services.
-	staffService := staffservice.New(staffRepo)
-	imageService := imageservice.New(imageRepo)
-	timeRecordService := timerecordservice.New(timeRecordRepo)
+	// Initializing application logic.
+	staffApp := staffapp.New(staffRepo)
+	imageApp := imageapp.New(imageRepo)
+	timeRecordApp := timerecordapp.New(timeRecordRepo)
 
-	hn := handler.New(imageService, staffService, timeRecordService)
+	hn := handler.New(imageApp, staffApp, timeRecordApp)
 
 	if cfg.APIRRelease() {
 		gin.SetMode(gin.ReleaseMode)

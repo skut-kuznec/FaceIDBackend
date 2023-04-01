@@ -5,7 +5,7 @@ import (
 )
 
 type TimeRecord struct {
-	Employee   int
+	Employee   uint64
 	StartWork  time.Time
 	FinishWork time.Time
 }

@@ -232,7 +232,7 @@ paths:
                 $ref: "#/components/schemas/Error"
   /images/data:
     get:
-      summary: Download image from server
+      summary: Get image description
       tags: 
         - Image
       operationId: GetImageDescription
@@ -349,7 +349,7 @@ paths:
                 $ref: "#/components/schemas/Error"
   /timerecord/lastbyemployee:
     get:
-      summary: Get employee
+      summary: Get last timerecord by employee
       tags: 
         - Timerecord
       operationId: LastTimerecordByEmploeeID
@@ -361,7 +361,7 @@ paths:
           schema:
             type: integer
             format: uint64
-          description: Timerecord ID
+          description: Employee ID
       responses:
         200:
           description: success

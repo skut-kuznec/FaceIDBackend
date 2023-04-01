@@ -8,7 +8,7 @@ import (
 	"github.com/smart48ru/FaceIDApp/internal/domain"
 )
 
-func TestRepo_Create(t *testing.T) {
+func TestRepo_Save(t *testing.T) {
 	r := New()
 
 	u := domain.Employee{
@@ -19,7 +19,7 @@ func TestRepo_Create(t *testing.T) {
 	ctx := context.Background()
 
 	// test creating a new employee
-	id, err := r.Create(ctx, u)
+	id, err := r.Save(ctx, u)
 	if err != nil {
 		t.Fatalf("unexpected error creating employee: %v", err)
 	}
@@ -46,7 +46,7 @@ func TestRepo_Delete(t *testing.T) {
 	ctx := context.Background()
 
 	// test creating a new employee
-	id, err := r.Create(ctx, u)
+	id, err := r.Save(ctx, u)
 	if err != nil {
 		t.Fatalf("unexpected error creating employee: %v", err)
 	}
@@ -62,27 +62,26 @@ func TestRepo_Delete(t *testing.T) {
 	}
 }
 
-func TestRepo_Read(t *testing.T) {
+func TestRepo_Get(t *testing.T) {
 	r := New()
 	u := domain.Employee{
-		ID:      123,
 		Name:    "John Doe",
 		PhotoID: 0,
 	}
 	ctx := context.Background()
 
 	// test creating a new employee
-	id, err := r.Create(ctx, u)
+	id, err := r.Save(ctx, u)
 	if err != nil {
 		t.Fatalf("unexpected error creating employee: %v", err)
 	}
 	// read employee
-	_, err = r.Read(ctx, id)
+	_, err = r.Get(ctx, id)
 	if err != nil {
 		t.Fatalf("unexpected error read employee: %v", err)
 	}
 	// read not create employee
-	_, err = r.Read(ctx, id*2)
+	_, err = r.Get(ctx, id*2)
 	if err == nil {
 		t.Fatalf("unexpected error read employee: %v", err)
 	}
@@ -91,20 +90,21 @@ func TestRepo_Read(t *testing.T) {
 func TestRepo_Update(t *testing.T) {
 	r := New()
 	u := domain.Employee{
-		ID:      123,
+		ID:      0,
 		Name:    "John Doe",
 		PhotoID: 0,
 	}
 	ctx := context.Background()
 
 	// test creating a new employee
-	id, err := r.Create(ctx, u)
+	id, err := r.Save(ctx, u)
 	if err != nil {
 		t.Fatalf("unexpected error creating employee: %v", err)
 	}
+	u.ID = id
 	u.Name = "NEW John Doe"
 	u.PhotoID = 10
-	emp, err := r.Update(ctx, id, u)
+	emp, err := r.Update(ctx, u)
 	if err != nil {
 		t.Fatalf("unexpected error update employee: %v", err)
 	}
@@ -142,12 +142,12 @@ func TestRepo_ReadAll(t *testing.T) {
 
 	// test creating a new employee
 	for _, emp := range employees {
-		if _, err := r.Create(ctx, emp); err != nil {
+		if _, err := r.Save(ctx, emp); err != nil {
 			t.Fatalf("unexpected error creating employee: %s", err)
 		}
 	}
 
-	savedEmpoloyees, err := r.ReadAll(ctx)
+	savedEmpoloyees, err := r.List(ctx)
 	if err != nil {
 		t.Fatalf("unexpected error read all employee: %v", err)
 	}

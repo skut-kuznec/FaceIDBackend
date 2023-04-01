@@ -2,41 +2,30 @@ package timerecordrepo
 
 import (
 	"context"
-	"time"
 
+	"github.com/smart48ru/FaceIDApp/internal/app/timerecordapp"
 	"github.com/smart48ru/FaceIDApp/internal/domain"
-	"github.com/smart48ru/FaceIDApp/internal/service/timerecordservice"
 )
 
-var _ timerecordservice.TimeRecordRepo = &Repo{}
+var _ timerecordapp.TimeRecordRepo = &Repo{}
 
 type Repo struct{}
 
-// Create implements timerecordservice.TimeRecordRepo
-func (*Repo) Create(ctx context.Context, c domain.TimeRecord) (int, error) {
-	panic("unimplemented")
-}
-
-// Delete implements timerecordservice.TimeRecordRepo
-func (*Repo) Delete(ctx context.Context, day time.Time, userID int) error {
-	panic("unimplemented")
-}
-
-// Read implements timerecordservice.TimeRecordRepo
-func (*Repo) Read(ctx context.Context, day time.Time) (domain.TimeRecord, error) {
-	panic("unimplemented")
-}
-
-// ReadAll implements timerecordservice.TimeRecordRepo
-func (*Repo) ReadAll(ctx context.Context) ([]domain.Employee, error) {
-	panic("unimplemented")
-}
-
-// Update implements timerecordservice.TimeRecordRepo
-func (*Repo) Update(ctx context.Context, day time.Time, c domain.TimeRecord) (domain.Employee, error) {
-	panic("unimplemented")
-}
-
 func New() *Repo {
 	return &Repo{}
+}
+
+// GetLastByEmpoyeeID implements timerecordapp.TimeRecordRepo
+func (r *Repo) GetLastByEmpoyeeID(ctx context.Context, id uint64) (domain.TimeRecord, error) {
+	panic("unimplemented")
+}
+
+// List implements timerecordapp.TimeRecordRepo
+func (r *Repo) List(ctx context.Context) ([]domain.TimeRecord, error) {
+	panic("unimplemented")
+}
+
+// Save implements timerecordapp.TimeRecordRepo
+func (r *Repo) Save(ctx context.Context, u domain.TimeRecord) (uint64, error) {
+	panic("unimplemented")
 }
