@@ -3,9 +3,11 @@ module github.com/smart48ru/FaceIDApp
 go 1.20
 
 require (
+	github.com/Kagami/go-face v0.0.0-20210630145111-0c14797b4d0e
 	github.com/deepmap/oapi-codegen v1.12.4
 	github.com/getkin/kin-openapi v0.115.0
 	github.com/gin-gonic/gin v1.9.0
+	github.com/gorilla/websocket v1.5.0
 	github.com/rs/zerolog v1.29.0
 	github.com/spf13/viper v1.15.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1

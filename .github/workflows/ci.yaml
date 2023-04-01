@@ -15,7 +15,9 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: 'stable'
-      - name: test
+      - name: Install dlib
+        run: sudo apt-get install -y libdlib-dev libblas-dev libatlas-base-dev liblapack-dev libjpeg-turbo8-dev
+      - name: Test
         run: go test -v -coverprofile=coverage.txt -covermode=atomic ./...
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
