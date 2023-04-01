@@ -24,11 +24,7 @@ func New(repo StaffRepo) *App {
 	}
 }
 
-func (a *App) AddEmployee(ctx context.Context, name string, photoID int) (uint64, error) {
-	employee := domain.Employee{
-		Name:    name,
-		PhotoID: photoID,
-	}
+func (a *App) AddEmployee(ctx context.Context, employee domain.Employee) (uint64, error) {
 	id, err := a.repo.Save(ctx, employee)
 	if err != nil {
 		return 0, err
