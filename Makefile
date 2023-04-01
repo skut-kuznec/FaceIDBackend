@@ -37,9 +37,15 @@ vet:
 	$(SYS_GO) vet ./...
 
 .PHONY: test
-## Run tests without caching
+## Run tests without caching & create coverage
 test:
-	@$(SYS_GO) clean -testcache && $(SYS_GO) test ./...
+	@$(SYS_GO) clean -testcache && $(SYS_GO) test -short -coverprofile=./coverage.txt -v  ./...
+
+.PHONY: test.cover
+## Run test coverage
+test.cover: test
+	$(SYS_GO) tool cover -html=./coverage.txt
+
 
 .PHONY: lint
 ## Run golangci-lint
