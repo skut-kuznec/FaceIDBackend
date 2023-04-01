@@ -2,171 +2,204 @@ package staffapp
 
 import (
 	"context"
-	"fmt"
+	"errors"
+	"github.com/golang/mock/gomock"
+	mock_staffapp "github.com/smart48ru/FaceIDApp/internal/app/staffapp/mocks"
 	"github.com/smart48ru/FaceIDApp/internal/domain"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
+	"reflect"
 	"testing"
 )
 
-func TestApp_AddEmployee(t *testing.T) {
-	// Создаем фейковый репозиторий с помощью пакета github.com/stretchr/testify/mock
-	mockRepo := new(MockStaffRepo)
+func TestAddEmployee(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-	// Создаем экземпляр приложения, передавая фейковый репозиторий
-	app := New(mockRepo)
+	mockRepo := mock_staffapp.NewMockStaffRepo(ctrl)
 
-	// Создаем фейковый контекст
-	ctx := context.Background()
+	// Положительный тест: ожидаем, что метод Save будет вызван с правильными параметрами и вернет результат
+	expectedMockEmployee := domain.Employee{
+		Name:    "John Doe",
+		PhotoID: 2,
+	}
+	// Позитивный тест: ожидаем, что метод Save вернет id нового пользователя
+	mockRepo.EXPECT().Save(gomock.Any(), expectedMockEmployee).Return(uint64(1), nil)
 
-	// Создаем фейкового сотрудника
-	employee := domain.Employee{
-		Name:    "John",
-		PhotoID: 10,
+	app := App{repo: mockRepo}
+
+	id, err := app.AddEmployee(context.Background(), expectedMockEmployee)
+	expectedID := uint64(1)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
 	}
 
-	// Задаем ожидаемый идентификатор сотрудника, который вернется из фейкового репозитория
-	expectedID := uint64(12)
+	if id != expectedID {
+		t.Errorf("Expected id %v but got %v", 1, expectedID)
+	}
 
-	// Задаем, что при вызове метода Save у фейкового репозитория с переданным контекстом и сотрудником
-	// должен возвращаться ожидаемый идентификатор и отсутствие ошибки
-	mockRepo.On("Save", ctx, employee).Return(expectedID, nil)
+	// Негативный тест: ожидаем, что метод Save вернет ошибку
+	mockRepo.EXPECT().Save(gomock.Any(), expectedMockEmployee).Return(uint64(0), errors.New("employee not found"))
 
-	// Вызываем метод AddEmployee приложения с переданным контекстом и сотрудником
-	id, err := app.AddEmployee(ctx, employee)
+	id, err = app.AddEmployee(context.Background(), expectedMockEmployee)
 
-	// Проверяем, что фейковый репозиторий был вызван с переданными аргументами
-	mockRepo.AssertCalled(t, "Save", ctx, employee)
+	if err == nil {
+		t.Errorf("Expected error but got nil")
+	}
 
-	// Проверяем, что метод AddEmployee вернул ожидаемый идентификатор и отсутствие ошибки
-	fmt.Println(expectedID, id)
-	assert.Equal(t, expectedID, id)
-	assert.Nil(t, err)
+	expectedErrMsg := "employee not found"
+	if err.Error() != expectedErrMsg {
+		t.Errorf("Expected error message '%s' but got '%s'", expectedErrMsg, err.Error())
+	}
 }
 
-func TestApp_GetEmployee(t *testing.T) {
-	// Создаем мок репозитория
-	mockRepo := new(MockStaffRepo)
-	// Создаем экземпляр нашего приложения, передавая мок репозитория
-	app := New(mockRepo)
-	ctx := context.Background()
+func TestGetEmployee(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-	// Определяем ожидаемый результат
-	expectedEmployee := domain.Employee{
-		ID:      2,
+	mockRepo := mock_staffapp.NewMockStaffRepo(ctrl)
+
+	// Положительный тест: ожидаем, что метод Get будет вызван с правильными параметрами и вернет результат
+	mockEmployee := domain.Employee{
+		ID:      1,
 		Name:    "John Doe",
-		PhotoID: 0,
+		PhotoID: 2,
+	}
+	mockRepo.EXPECT().Get(gomock.Any(), uint64(1)).Return(mockEmployee, nil)
+
+	app := App{repo: mockRepo}
+
+	employee, err := app.GetEmployee(context.Background(), 1)
+
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
 	}
 
-	// Задаем идентификатор сотрудника для запроса
-	ID := uint64(2)
+	if !reflect.DeepEqual(employee, mockEmployee) {
+		t.Errorf("Expected employee %v but got %v", mockEmployee, employee)
+	}
 
-	// Задаем, что при вызове метода Get у фейкового репозитория с переданным контекстом и ID сотрудника
-	// должен возвращаться ожидаемая структура и отсутствие ошибки
-	mockRepo.On("Get", ctx, expectedEmployee.ID).Return(expectedEmployee, nil)
+	// Негативный тест: ожидаем, что метод Get вернет ошибку
+	mockRepo.EXPECT().Get(gomock.Any(), uint64(2)).Return(domain.Employee{}, errors.New("employee not found"))
 
-	// Проверяем, что фейковый репозиторий был вызван с переданными аргументами
-	employee, err := app.GetEmployee(ctx, ID)
+	employee, err = app.GetEmployee(context.Background(), 2)
 
-	// Проверяем, что метод GetEmployee вернул ожидаемую структуру и отсутствие ошибки
-	assert.NoError(t, err)
-	assert.Equal(t, expectedEmployee, employee)
-	mockRepo.AssertCalled(t, "Get", ctx, expectedEmployee.ID)
+	if err == nil {
+		t.Errorf("Expected error but got nil")
+	}
+
+	expectedErrMsg := "employee not found"
+	if err.Error() != expectedErrMsg {
+		t.Errorf("Expected error message '%s' but got '%s'", expectedErrMsg, err.Error())
+	}
 }
 
 func TestApp_UpdateEmployee(t *testing.T) {
-	// Создаем мок репозитория
-	mockRepo := new(MockStaffRepo)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-	// Создаем экземпляр нашего приложения, передавая мок репозитория
-	app := New(mockRepo)
-	ctx := context.Background()
+	mockRepo := mock_staffapp.NewMockStaffRepo(ctrl)
 
-	// Создаем тестовый сотрудник
-	employee := domain.Employee{
+	// Положительный тест: ожидаем, что метод Get будет вызван с правильными параметрами и вернет результат
+	mockEmployee := domain.Employee{
 		ID:      1,
 		Name:    "John Doe",
-		PhotoID: 0,
+		PhotoID: 2,
 	}
 
-	// Определяем ожидаемый результат
-	expectedEmployee := domain.Employee{
-		ID:      1,
-		Name:    "John Doe",
-		PhotoID: 0,
+	mockRepo.EXPECT().Update(gomock.Any(), mockEmployee).Return(mockEmployee, nil)
+	app := App{repo: mockRepo}
+
+	employee, err := app.UpdateEmployee(context.Background(), mockEmployee)
+
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
 	}
 
-	// Указываем, что при вызове метода Update репозитория с параметром employee вернуть expectedEmployee и nil
-	mockRepo.On("Update", mock.Anything, employee).Return(expectedEmployee, nil)
+	if !reflect.DeepEqual(employee, mockEmployee) {
+		t.Errorf("Expected employee %v but got %v", mockEmployee, employee)
+	}
 
-	// Вызываем метод UpdateEmployee нашего приложения
-	actualEmployee, err := app.UpdateEmployee(ctx, employee)
+	// Негативный тест: ожидаем, что метод Get вернет ошибку
+	mockRepo.EXPECT().Update(gomock.Any(), mockEmployee).Return(domain.Employee{}, errors.New("employee not found"))
 
-	// Проверяем, что метод Update нашего мок репозитория был вызван с параметром employee
-	mockRepo.AssertCalled(t, "Update", mock.Anything, employee)
+	employee, err = app.UpdateEmployee(context.Background(), mockEmployee)
 
-	// Проверяем, что метод UpdateEmployee вернул ожидаемый результат и ошибку равную nil
-	assert.Equal(t, expectedEmployee, actualEmployee)
-	assert.Nil(t, err)
+	if err == nil {
+		t.Errorf("Expected error but got nil")
+	}
+
+	expectedErrMsg := "employee not found"
+	if err.Error() != expectedErrMsg {
+		t.Errorf("Expected error message '%s' but got '%s'", expectedErrMsg, err.Error())
+	}
+
 }
 
 func TestApp_DeleteEmployee(t *testing.T) {
-	// Создаем мок репозитория
-	mockRepo := new(MockStaffRepo)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-	// Создаем экземпляр приложения, передавая фейковый репозиторий
-	app := New(mockRepo)
+	mockRepo := mock_staffapp.NewMockStaffRepo(ctrl)
 
-	// Создаем фейковый контекст
-	ctx := context.Background()
+	// Положительный тест: ожидаем, что метод Delete будет вызван с правильными параметрами и не вернет ошибку
+	id := uint64(1)
 
-	// Задаем идентификатор сотрудника, который будет удален
-	employeeID := uint64(123)
+	mockRepo.EXPECT().Delete(gomock.Any(), id).Return(nil)
+	app := App{repo: mockRepo}
 
-	// Задаем, что при вызове метода Delete у фейкового репозитория с переданным контекстом и идентификатором
-	// должен отсутствовать возвращаемый результат
-	mockRepo.On("Delete", ctx, employeeID).Return(nil)
+	err := app.DeleteEmployee(context.Background(), id)
 
-	// Вызываем метод DeleteEmployee приложения с переданным контекстом и идентификатором сотрудника
-	err := app.DeleteEmployee(ctx, employeeID)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	// Негативный тест: ожидаем, что метод Get вернет ошибку
+	mockRepo.EXPECT().Delete(gomock.Any(), id).Return(errors.New("employee not found"))
 
-	// Проверяем, что фейковый репозиторий был вызван с переданными аргументами
-	mockRepo.AssertCalled(t, "Delete", ctx, employeeID)
+	err = app.DeleteEmployee(context.Background(), id)
 
-	// Проверяем, что метод DeleteEmployee вернул отсутствие ошибки
-	assert.Nil(t, err)
+	if err == nil {
+		t.Errorf("Expected error but got nil")
+	}
+
+	expectedErrMsg := "employee not found"
+	if err.Error() != expectedErrMsg {
+		t.Errorf("Expected error message '%s' but got '%s'", expectedErrMsg, err.Error())
+	}
+
 }
 
 func TestApp_ListEmployee(t *testing.T) {
-	// Создаем фейковый список сотрудников
-	employees := []domain.Employee{
-		{ID: 1, Name: "John Doe", PhotoID: 1},
-		{ID: 2, Name: "Jon Brown", PhotoID: 4},
-		{ID: 3, Name: "Bob Smith", PhotoID: 12},
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockRepo := mock_staffapp.NewMockStaffRepo(ctrl)
+
+	// Положительный тест: ожидаем, что метод List будет вызван с правильными параметрами и не вернет ошибку
+	expectedList := []domain.Employee{{ID: 1, Name: "John", PhotoID: 2}, {ID: 2, Name: "Jane", PhotoID: 12}}
+
+	mockRepo.EXPECT().List(gomock.Any()).Return(expectedList, nil)
+	app := App{repo: mockRepo}
+
+	list, err := app.ListEmployee(context.Background())
+
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
 	}
 
-	// Создаем мок репозитория
-	mockRepo := new(MockStaffRepo)
+	if !reflect.DeepEqual(expectedList, list) {
+		t.Errorf("Expected employee %v but got %v", expectedList, list)
+	}
 
-	// Создаем экземпляр приложения, передавая фейковый репозиторий
-	app := New(mockRepo)
+	// Негативный тест: ожидаем, что метод List вернет ошибку
+	mockRepo.EXPECT().List(gomock.Any()).Return([]domain.Employee{}, errors.New("employee not found"))
 
-	// Создаем фейковый контекст
-	ctx := context.Background()
+	list, err = app.ListEmployee(context.Background())
 
-	// Задаем, что при вызове метода List у фейкового репозитория с переданным контекстом
-	// должен возвращаться фейковый список сотрудников
-	mockRepo.On("List", ctx).Return(employees, nil)
+	if err == nil {
+		t.Errorf("Expected error but got nil")
+	}
 
-	// Вызываем метод ListEmployee приложения с переданным контекстом
-	list, err := app.ListEmployee(ctx)
-
-	// Проверяем, что фейковый репозиторий был вызван с переданным контекстом
-	mockRepo.AssertCalled(t, "List", ctx)
-
-	// Проверяем, что метод ListEmployee вернул ожидаемый список сотрудников
-	assert.Equal(t, employees, list)
-
-	// Проверяем, что метод ListEmployee вернул отсутствие ошибки
-	assert.Nil(t, err)
+	expectedErrMsg := "employee not found"
+	if err.Error() != expectedErrMsg {
+		t.Errorf("Expected error message '%s' but got '%s'", expectedErrMsg, err.Error())
+	}
 }
