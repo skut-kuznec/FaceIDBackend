@@ -1,0 +1,21 @@
+name: Check
+on:
+  push:
+    branches: [ dev, main ]
+  pull_request:
+jobs:
+  test:
+    strategy:
+      matrix:
+        go: [ '1.19.x', '1.20.x' ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 'stable'
+      - name: test
+        run: go test -v -coverprofile=coverage.txt -covermode=atomic ./...
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3

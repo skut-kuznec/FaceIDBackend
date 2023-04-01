@@ -18,20 +18,6 @@ type Repo struct {
 	seq uint64
 }
 
-func (r *Repo) Serialize() []domain.Employee {
-	if len(r.m) == 0 {
-		return []domain.Employee{}
-	}
-	allEmp := make([]domain.Employee, 0, len(r.m))
-	for _, employee := range r.m {
-		allEmp = append(allEmp, employee)
-	}
-	sort.Slice(allEmp, func(i, j int) bool {
-		return allEmp[i].ID < allEmp[j].ID
-	})
-	return allEmp
-}
-
 // Create implements staffservice.StaffRepo
 func (r *Repo) Create(ctx context.Context, u domain.Employee) (uint64, error) {
 	r.mu.Lock()
@@ -88,14 +74,20 @@ func (r *Repo) Read(ctx context.Context, id uint64) (domain.Employee, error) {
 func (r *Repo) ReadAll(ctx context.Context) ([]domain.Employee, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	var employees []domain.Employee
+
 	select {
 	case <-ctx.Done():
-		return []domain.Employee{}, ctx.Err()
+		return nil, ctx.Err()
 	default:
 	}
 
-	employees = r.Serialize()
+	employees := make([]domain.Employee, 0, len(r.m))
+	for _, employee := range r.m {
+		employees = append(employees, employee)
+	}
+	sort.Slice(employees, func(i, j int) bool {
+		return employees[i].ID < employees[j].ID
+	})
 
 	return employees, nil
 }

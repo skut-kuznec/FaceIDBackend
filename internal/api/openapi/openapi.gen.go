@@ -7,28 +7,72 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/url"
 	"path"
 	"strings"
+	"time"
 
+	"github.com/deepmap/oapi-codegen/pkg/runtime"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/gin-gonic/gin"
 )
 
-// Any defines model for Any.
-type Any = interface{}
+// AddThirdpartyRequest defines model for AddThirdpartyRequest.
+type AddThirdpartyRequest struct {
+	Url string `json:"url"`
+}
+
+// AddTimerecordRequest defines model for AddTimerecordRequest.
+type AddTimerecordRequest struct {
+	Employee  int64           `json:"employee"`
+	EntryTime TimerecordTime  `json:"entry_time"`
+	ExitTime  *TimerecordTime `json:"exit_time,omitempty"`
+}
+
+// AddTimerecordResponse defines model for AddTimerecordResponse.
+type AddTimerecordResponse struct {
+	Employee  int64           `json:"employee"`
+	EntryTime TimerecordTime  `json:"entry_time"`
+	ExitTime  *TimerecordTime `json:"exit_time,omitempty"`
+	ID        int64           `json:"id"`
+}
 
 // CreateEmployeeRequest defines model for CreateEmployeeRequest.
 type CreateEmployeeRequest struct {
-	Meta    Any    `json:"meta"`
+	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
 	PhotoID int64  `json:"photo_id"`
 }
 
 // CreateEmployeeResponse defines model for CreateEmployeeResponse.
 type CreateEmployeeResponse struct {
-	ID int64 `json:"id"`
+	ID      int64  `json:"id"`
+	Meta    Meta   `json:"meta"`
+	Name    string `json:"name"`
+	PhotoID int64  `json:"photo_id"`
+}
+
+// DeleteEmployeeResponse defines model for DeleteEmployeeResponse.
+type DeleteEmployeeResponse struct {
+	Message string `json:"message"`
+}
+
+// Employee defines model for Employee.
+type Employee struct {
+	ID      int64  `json:"id"`
+	Meta    Meta   `json:"meta"`
+	Name    string `json:"name"`
+	PhotoID int64  `json:"photo_id"`
+}
+
+// EmployeeBase defines model for EmployeeBase.
+type EmployeeBase struct {
+	Meta    Meta   `json:"meta"`
+	Name    string `json:"name"`
+	PhotoID int64  `json:"photo_id"`
 }
 
 // Error defines model for Error.
@@ -36,17 +80,250 @@ type Error struct {
 	Error *string `json:"error,omitempty"`
 }
 
+// GetEmployeeResponse defines model for GetEmployeeResponse.
+type GetEmployeeResponse struct {
+	ID      int64  `json:"id"`
+	Meta    Meta   `json:"meta"`
+	Name    string `json:"name"`
+	PhotoID int64  `json:"photo_id"`
+}
+
+// GetImageDescriptionResponse defines model for GetImageDescriptionResponse.
+type GetImageDescriptionResponse struct {
+	ID   int64  `json:"id"`
+	Path string `json:"path"`
+}
+
+// Image defines model for Image.
+type Image struct {
+	ID   int64  `json:"id"`
+	Path string `json:"path"`
+}
+
+// LastTimerecordByEmploeeIDResponse defines model for LastTimerecordByEmploeeIDResponse.
+type LastTimerecordByEmploeeIDResponse struct {
+	Employee  int64           `json:"employee"`
+	EntryTime TimerecordTime  `json:"entry_time"`
+	ExitTime  *TimerecordTime `json:"exit_time,omitempty"`
+	ID        int64           `json:"id"`
+}
+
+// ListEmployeesResponse defines model for ListEmployeesResponse.
+type ListEmployeesResponse = []Employee
+
+// ListThirdpartyResponse defines model for ListThirdpartyResponse.
+type ListThirdpartyResponse = []string
+
+// ListTimerecordResponse defines model for ListTimerecordResponse.
+type ListTimerecordResponse = []Timerecord
+
+// Meta defines model for Meta.
+type Meta struct {
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
+// RecognizeEmployeeResponse defines model for RecognizeEmployeeResponse.
+type RecognizeEmployeeResponse struct {
+	ID      int64  `json:"id"`
+	Meta    Meta   `json:"meta"`
+	Name    string `json:"name"`
+	PhotoID int64  `json:"photo_id"`
+}
+
+// Timerecord defines model for Timerecord.
+type Timerecord struct {
+	Employee  int64           `json:"employee"`
+	EntryTime TimerecordTime  `json:"entry_time"`
+	ExitTime  *TimerecordTime `json:"exit_time,omitempty"`
+	ID        int64           `json:"id"`
+}
+
+// TimerecordBase defines model for TimerecordBase.
+type TimerecordBase struct {
+	Employee  int64           `json:"employee"`
+	EntryTime TimerecordTime  `json:"entry_time"`
+	ExitTime  *TimerecordTime `json:"exit_time,omitempty"`
+}
+
+// TimerecordTime defines model for TimerecordTime.
+type TimerecordTime struct {
+	PhotoId uint64    `json:"photo_id"`
+	Time    time.Time `json:"time"`
+}
+
+// UpdateEmployeeRequest defines model for UpdateEmployeeRequest.
+type UpdateEmployeeRequest struct {
+	ID      int64  `json:"id"`
+	Meta    Meta   `json:"meta"`
+	Name    string `json:"name"`
+	PhotoID int64  `json:"photo_id"`
+}
+
+// UpdateEmployeeResponse defines model for UpdateEmployeeResponse.
+type UpdateEmployeeResponse struct {
+	ID      int64  `json:"id"`
+	Meta    Meta   `json:"meta"`
+	Name    string `json:"name"`
+	PhotoID int64  `json:"photo_id"`
+}
+
+// UploadImageResponse defines model for UploadImageResponse.
+type UploadImageResponse struct {
+	ID   int64  `json:"id"`
+	Path string `json:"path"`
+}
+
+// GetImageDescriptionParams defines parameters for GetImageDescription.
+type GetImageDescriptionParams struct {
+	// Image ID
+	ID uint64 `form:"id" json:"id"`
+}
+
+// DownloadImageParams defines parameters for DownloadImage.
+type DownloadImageParams struct {
+	// Image ID
+	ID uint64 `form:"id" json:"id"`
+}
+
 // CreateEmployeeJSONBody defines parameters for CreateEmployee.
 type CreateEmployeeJSONBody = CreateEmployeeRequest
+
+// DeleteEmployeeParams defines parameters for DeleteEmployee.
+type DeleteEmployeeParams struct {
+	// Employee ID
+	ID uint64 `form:"id" json:"id"`
+}
+
+// GetEmployeeParams defines parameters for GetEmployee.
+type GetEmployeeParams struct {
+	// Employee ID
+	ID uint64 `form:"id" json:"id"`
+}
+
+// UpdateEmployeeJSONBody defines parameters for UpdateEmployee.
+type UpdateEmployeeJSONBody = UpdateEmployeeRequest
+
+// AddThirdpartyJSONBody defines parameters for AddThirdparty.
+type AddThirdpartyJSONBody = AddThirdpartyRequest
+
+// AddTimerecordJSONBody defines parameters for AddTimerecord.
+type AddTimerecordJSONBody = AddTimerecordRequest
+
+// LastTimerecordByEmploeeIDParams defines parameters for LastTimerecordByEmploeeID.
+type LastTimerecordByEmploeeIDParams struct {
+	// Timerecord ID
+	ID uint64 `form:"id" json:"id"`
+}
 
 // CreateEmployeeJSONRequestBody defines body for CreateEmployee for application/json ContentType.
 type CreateEmployeeJSONRequestBody = CreateEmployeeJSONBody
 
+// UpdateEmployeeJSONRequestBody defines body for UpdateEmployee for application/json ContentType.
+type UpdateEmployeeJSONRequestBody = UpdateEmployeeJSONBody
+
+// AddThirdpartyJSONRequestBody defines body for AddThirdparty for application/json ContentType.
+type AddThirdpartyJSONRequestBody = AddThirdpartyJSONBody
+
+// AddTimerecordJSONRequestBody defines body for AddTimerecord for application/json ContentType.
+type AddTimerecordJSONRequestBody = AddTimerecordJSONBody
+
+// Getter for additional properties for Meta. Returns the specified
+// element and whether it was found
+func (a Meta) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for Meta
+func (a *Meta) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for Meta to handle AdditionalProperties
+func (a *Meta) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for Meta to handle AdditionalProperties
+func (a Meta) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// Upload image on server
+	// (POST /image/upload)
+	UploadImage(c *gin.Context)
+	// Download image from server
+	// (GET /images/data)
+	GetImageDescription(c *gin.Context, params GetImageDescriptionParams)
+	// Download image from server
+	// (GET /images/file)
+	DownloadImage(c *gin.Context, params DownloadImageParams)
 	// Create new employee
-	// (POST /stuff/add)
+	// (POST /staff/add)
 	CreateEmployee(c *gin.Context)
+	// Get all staff
+	// (GET /staff/all)
+	ListEmployees(c *gin.Context)
+	// Delete employee
+	// (DELETE /staff/delete)
+	DeleteEmployee(c *gin.Context, params DeleteEmployeeParams)
+	// Get employee
+	// (GET /staff/get)
+	GetEmployee(c *gin.Context, params GetEmployeeParams)
+	// Recognize employee
+	// (POST /staff/recognize)
+	RecognizeEmployee(c *gin.Context)
+	// Update employee
+	// (PUT /staff/update)
+	UpdateEmployee(c *gin.Context)
+	// Add new thirdparty link
+	// (POST /thirdparty/add)
+	AddThirdparty(c *gin.Context)
+	// Get thirdparty list of links
+	// (GET /thirdparty/all)
+	ListThirdparty(c *gin.Context)
+	// Save timerecord event about staff
+	// (POST /timerecord/add)
+	AddTimerecord(c *gin.Context)
+	// Get list of all timerecord events
+	// (GET /timerecord/all)
+	ListTimerecord(c *gin.Context)
+	// Get employee
+	// (GET /timerecord/lastbyemployee)
+	LastTimerecordByEmploeeID(c *gin.Context, params LastTimerecordByEmploeeIDParams)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -57,6 +334,74 @@ type ServerInterfaceWrapper struct {
 
 type MiddlewareFunc func(c *gin.Context)
 
+// UploadImage operation middleware
+func (siw *ServerInterfaceWrapper) UploadImage(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.UploadImage(c)
+}
+
+// GetImageDescription operation middleware
+func (siw *ServerInterfaceWrapper) GetImageDescription(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetImageDescriptionParams
+
+	// ------------- Required query parameter "id" -------------
+	if paramValue := c.Query("id"); paramValue != "" {
+
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "Query argument id is required, but not found"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "id", c.Request.URL.Query(), &params.ID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": fmt.Sprintf("Invalid format for parameter id: %s", err)})
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.GetImageDescription(c, params)
+}
+
+// DownloadImage operation middleware
+func (siw *ServerInterfaceWrapper) DownloadImage(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DownloadImageParams
+
+	// ------------- Required query parameter "id" -------------
+	if paramValue := c.Query("id"); paramValue != "" {
+
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "Query argument id is required, but not found"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "id", c.Request.URL.Query(), &params.ID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": fmt.Sprintf("Invalid format for parameter id: %s", err)})
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.DownloadImage(c, params)
+}
+
 // CreateEmployee operation middleware
 func (siw *ServerInterfaceWrapper) CreateEmployee(c *gin.Context) {
 
@@ -65,6 +410,163 @@ func (siw *ServerInterfaceWrapper) CreateEmployee(c *gin.Context) {
 	}
 
 	siw.Handler.CreateEmployee(c)
+}
+
+// ListEmployees operation middleware
+func (siw *ServerInterfaceWrapper) ListEmployees(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.ListEmployees(c)
+}
+
+// DeleteEmployee operation middleware
+func (siw *ServerInterfaceWrapper) DeleteEmployee(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteEmployeeParams
+
+	// ------------- Required query parameter "id" -------------
+	if paramValue := c.Query("id"); paramValue != "" {
+
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "Query argument id is required, but not found"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "id", c.Request.URL.Query(), &params.ID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": fmt.Sprintf("Invalid format for parameter id: %s", err)})
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.DeleteEmployee(c, params)
+}
+
+// GetEmployee operation middleware
+func (siw *ServerInterfaceWrapper) GetEmployee(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetEmployeeParams
+
+	// ------------- Required query parameter "id" -------------
+	if paramValue := c.Query("id"); paramValue != "" {
+
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "Query argument id is required, but not found"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "id", c.Request.URL.Query(), &params.ID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": fmt.Sprintf("Invalid format for parameter id: %s", err)})
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.GetEmployee(c, params)
+}
+
+// RecognizeEmployee operation middleware
+func (siw *ServerInterfaceWrapper) RecognizeEmployee(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.RecognizeEmployee(c)
+}
+
+// UpdateEmployee operation middleware
+func (siw *ServerInterfaceWrapper) UpdateEmployee(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.UpdateEmployee(c)
+}
+
+// AddThirdparty operation middleware
+func (siw *ServerInterfaceWrapper) AddThirdparty(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.AddThirdparty(c)
+}
+
+// ListThirdparty operation middleware
+func (siw *ServerInterfaceWrapper) ListThirdparty(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.ListThirdparty(c)
+}
+
+// AddTimerecord operation middleware
+func (siw *ServerInterfaceWrapper) AddTimerecord(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.AddTimerecord(c)
+}
+
+// ListTimerecord operation middleware
+func (siw *ServerInterfaceWrapper) ListTimerecord(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.ListTimerecord(c)
+}
+
+// LastTimerecordByEmploeeID operation middleware
+func (siw *ServerInterfaceWrapper) LastTimerecordByEmploeeID(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params LastTimerecordByEmploeeIDParams
+
+	// ------------- Required query parameter "id" -------------
+	if paramValue := c.Query("id"); paramValue != "" {
+
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "Query argument id is required, but not found"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "id", c.Request.URL.Query(), &params.ID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": fmt.Sprintf("Invalid format for parameter id: %s", err)})
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.LastTimerecordByEmploeeID(c, params)
 }
 
 // GinServerOptions provides options for the Gin server.
@@ -85,7 +587,33 @@ func RegisterHandlersWithOptions(router *gin.Engine, si ServerInterface, options
 		HandlerMiddlewares: options.Middlewares,
 	}
 
-	router.POST(options.BaseURL+"/stuff/add", wrapper.CreateEmployee)
+	router.POST(options.BaseURL+"/image/upload", wrapper.UploadImage)
+
+	router.GET(options.BaseURL+"/images/data", wrapper.GetImageDescription)
+
+	router.GET(options.BaseURL+"/images/file", wrapper.DownloadImage)
+
+	router.POST(options.BaseURL+"/staff/add", wrapper.CreateEmployee)
+
+	router.GET(options.BaseURL+"/staff/all", wrapper.ListEmployees)
+
+	router.DELETE(options.BaseURL+"/staff/delete", wrapper.DeleteEmployee)
+
+	router.GET(options.BaseURL+"/staff/get", wrapper.GetEmployee)
+
+	router.POST(options.BaseURL+"/staff/recognize", wrapper.RecognizeEmployee)
+
+	router.PUT(options.BaseURL+"/staff/update", wrapper.UpdateEmployee)
+
+	router.POST(options.BaseURL+"/thirdparty/add", wrapper.AddThirdparty)
+
+	router.GET(options.BaseURL+"/thirdparty/all", wrapper.ListThirdparty)
+
+	router.POST(options.BaseURL+"/timerecord/add", wrapper.AddTimerecord)
+
+	router.GET(options.BaseURL+"/timerecord/all", wrapper.ListTimerecord)
+
+	router.GET(options.BaseURL+"/timerecord/lastbyemployee", wrapper.LastTimerecordByEmploeeID)
 
 	return router
 }
@@ -93,16 +621,30 @@ func RegisterHandlersWithOptions(router *gin.Engine, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file
