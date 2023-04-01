@@ -3,6 +3,7 @@ package staffrepo
 import (
 	"context"
 	"fmt"
+	"sort"
 	"sync"
 
 	"github.com/smart48ru/FaceIDApp/internal/domain"
@@ -73,16 +74,20 @@ func (r *Repo) Read(ctx context.Context, id uint64) (domain.Employee, error) {
 func (r *Repo) ReadAll(ctx context.Context) ([]domain.Employee, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	var employees []domain.Employee
+
 	select {
 	case <-ctx.Done():
-		return employees, ctx.Err()
+		return nil, ctx.Err()
 	default:
 	}
 
-	for _, employe := range r.m {
-		employees = append(employees, employe)
+	employees := make([]domain.Employee, 0, len(r.m))
+	for _, employee := range r.m {
+		employees = append(employees, employee)
 	}
+	sort.Slice(employees, func(i, j int) bool {
+		return employees[i].ID < employees[j].ID
+	})
 
 	return employees, nil
 }
