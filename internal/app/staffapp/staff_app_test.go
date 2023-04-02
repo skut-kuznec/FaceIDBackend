@@ -3,18 +3,19 @@ package staffapp
 import (
 	"context"
 	"errors"
-	"github.com/golang/mock/gomock"
-	mock_staffapp "github.com/smart48ru/FaceIDApp/internal/app/staffapp/mocks"
-	"github.com/smart48ru/FaceIDApp/internal/domain"
 	"reflect"
 	"testing"
+
+	"github.com/golang/mock/gomock"
+	"github.com/smart48ru/FaceIDApp/internal/app/staffapp/mocks"
+	"github.com/smart48ru/FaceIDApp/internal/domain"
 )
 
 func TestAddEmployee(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	mockRepo := mock_staffapp.NewMockStaffRepo(ctrl)
+	mockRepo := mocks.NewMockStaffRepo(ctrl)
 
 	// Положительный тест: ожидаем, что метод Save будет вызван с правильными параметрами и вернет результат
 	expectedMockEmployee := domain.Employee{
@@ -39,8 +40,7 @@ func TestAddEmployee(t *testing.T) {
 	// Негативный тест: ожидаем, что метод Save вернет ошибку
 	mockRepo.EXPECT().Save(gomock.Any(), expectedMockEmployee).Return(uint64(0), errors.New("employee not found"))
 
-	id, err = app.AddEmployee(context.Background(), expectedMockEmployee)
-
+	_, err = app.AddEmployee(context.Background(), expectedMockEmployee)
 	if err == nil {
 		t.Errorf("Expected error but got nil")
 	}
@@ -55,7 +55,7 @@ func TestGetEmployee(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	mockRepo := mock_staffapp.NewMockStaffRepo(ctrl)
+	mockRepo := mocks.NewMockStaffRepo(ctrl)
 
 	// Положительный тест: ожидаем, что метод Get будет вызван с правильными параметрами и вернет результат
 	mockEmployee := domain.Employee{
@@ -80,8 +80,7 @@ func TestGetEmployee(t *testing.T) {
 	// Негативный тест: ожидаем, что метод Get вернет ошибку
 	mockRepo.EXPECT().Get(gomock.Any(), uint64(2)).Return(domain.Employee{}, errors.New("employee not found"))
 
-	employee, err = app.GetEmployee(context.Background(), 2)
-
+	_, err = app.GetEmployee(context.Background(), 2)
 	if err == nil {
 		t.Errorf("Expected error but got nil")
 	}
@@ -96,7 +95,7 @@ func TestApp_UpdateEmployee(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	mockRepo := mock_staffapp.NewMockStaffRepo(ctrl)
+	mockRepo := mocks.NewMockStaffRepo(ctrl)
 
 	// Положительный тест: ожидаем, что метод Get будет вызван с правильными параметрами и вернет результат
 	mockEmployee := domain.Employee{
@@ -109,7 +108,6 @@ func TestApp_UpdateEmployee(t *testing.T) {
 	app := App{repo: mockRepo}
 
 	employee, err := app.UpdateEmployee(context.Background(), mockEmployee)
-
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -121,8 +119,7 @@ func TestApp_UpdateEmployee(t *testing.T) {
 	// Негативный тест: ожидаем, что метод Get вернет ошибку
 	mockRepo.EXPECT().Update(gomock.Any(), mockEmployee).Return(domain.Employee{}, errors.New("employee not found"))
 
-	employee, err = app.UpdateEmployee(context.Background(), mockEmployee)
-
+	_, err = app.UpdateEmployee(context.Background(), mockEmployee)
 	if err == nil {
 		t.Errorf("Expected error but got nil")
 	}
@@ -138,7 +135,7 @@ func TestApp_DeleteEmployee(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	mockRepo := mock_staffapp.NewMockStaffRepo(ctrl)
+	mockRepo := mocks.NewMockStaffRepo(ctrl)
 
 	// Положительный тест: ожидаем, что метод Delete будет вызван с правильными параметрами и не вернет ошибку
 	id := uint64(1)
@@ -164,14 +161,13 @@ func TestApp_DeleteEmployee(t *testing.T) {
 	if err.Error() != expectedErrMsg {
 		t.Errorf("Expected error message '%s' but got '%s'", expectedErrMsg, err.Error())
 	}
-
 }
 
 func TestApp_ListEmployee(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	mockRepo := mock_staffapp.NewMockStaffRepo(ctrl)
+	mockRepo := mocks.NewMockStaffRepo(ctrl)
 
 	// Положительный тест: ожидаем, что метод List будет вызван с правильными параметрами и не вернет ошибку
 	expectedList := []domain.Employee{{ID: 1, Name: "John", PhotoID: 2}, {ID: 2, Name: "Jane", PhotoID: 12}}
@@ -192,8 +188,7 @@ func TestApp_ListEmployee(t *testing.T) {
 	// Негативный тест: ожидаем, что метод List вернет ошибку
 	mockRepo.EXPECT().List(gomock.Any()).Return([]domain.Employee{}, errors.New("employee not found"))
 
-	list, err = app.ListEmployee(context.Background())
-
+	_, err = app.ListEmployee(context.Background())
 	if err == nil {
 		t.Errorf("Expected error but got nil")
 	}

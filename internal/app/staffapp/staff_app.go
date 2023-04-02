@@ -6,8 +6,7 @@ import (
 	"github.com/smart48ru/FaceIDApp/internal/domain"
 )
 
-//go:generate mockgen -source=staff_app.go -destination=mocks/mocks.go
-
+//go:generate mockgen -source=staff_app.go -destination=mocks/staff_app_mock.go -package=mocks
 type StaffRepo interface {
 	Save(ctx context.Context, u domain.Employee) (uint64, error)
 	Get(ctx context.Context, id uint64) (domain.Employee, error)
