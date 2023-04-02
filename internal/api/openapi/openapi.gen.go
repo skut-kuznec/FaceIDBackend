@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -44,15 +43,15 @@ type AddTimerecordResponse struct {
 type CreateEmployeeRequest struct {
 	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
-	PhotoID int64  `json:"photo_id"`
+	PhotoID uint64 `json:"photo_id"`
 }
 
 // CreateEmployeeResponse defines model for CreateEmployeeResponse.
 type CreateEmployeeResponse struct {
-	ID      int64  `json:"id"`
+	ID      uint64 `json:"id"`
 	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
-	PhotoID int64  `json:"photo_id"`
+	PhotoID uint64 `json:"photo_id"`
 }
 
 // DeleteEmployeeResponse defines model for DeleteEmployeeResponse.
@@ -62,41 +61,41 @@ type DeleteEmployeeResponse struct {
 
 // Employee defines model for Employee.
 type Employee struct {
-	ID      int64  `json:"id"`
+	ID      uint64 `json:"id"`
 	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
-	PhotoID int64  `json:"photo_id"`
+	PhotoID uint64 `json:"photo_id"`
 }
 
 // EmployeeBase defines model for EmployeeBase.
 type EmployeeBase struct {
 	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
-	PhotoID int64  `json:"photo_id"`
+	PhotoID uint64 `json:"photo_id"`
 }
 
 // Error defines model for Error.
 type Error struct {
-	Error *string `json:"error,omitempty"`
+	Error string `json:"error"`
 }
 
 // GetEmployeeResponse defines model for GetEmployeeResponse.
 type GetEmployeeResponse struct {
-	ID      int64  `json:"id"`
+	ID      uint64 `json:"id"`
 	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
-	PhotoID int64  `json:"photo_id"`
+	PhotoID uint64 `json:"photo_id"`
 }
 
 // GetImageDescriptionResponse defines model for GetImageDescriptionResponse.
 type GetImageDescriptionResponse struct {
-	ID   int64  `json:"id"`
+	ID   uint64 `json:"id"`
 	Path string `json:"path"`
 }
 
 // Image defines model for Image.
 type Image struct {
-	ID   int64  `json:"id"`
+	ID   uint64 `json:"id"`
 	Path string `json:"path"`
 }
 
@@ -118,16 +117,14 @@ type ListThirdpartyResponse = []string
 type ListTimerecordResponse = []Timerecord
 
 // Meta defines model for Meta.
-type Meta struct {
-	AdditionalProperties map[string]interface{} `json:"-"`
-}
+type Meta = map[string]interface{}
 
 // RecognizeEmployeeResponse defines model for RecognizeEmployeeResponse.
 type RecognizeEmployeeResponse struct {
-	ID      int64  `json:"id"`
+	ID      uint64 `json:"id"`
 	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
-	PhotoID int64  `json:"photo_id"`
+	PhotoID uint64 `json:"photo_id"`
 }
 
 // Timerecord defines model for Timerecord.
@@ -153,23 +150,23 @@ type TimerecordTime struct {
 
 // UpdateEmployeeRequest defines model for UpdateEmployeeRequest.
 type UpdateEmployeeRequest struct {
-	ID      int64  `json:"id"`
+	ID      uint64 `json:"id"`
 	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
-	PhotoID int64  `json:"photo_id"`
+	PhotoID uint64 `json:"photo_id"`
 }
 
 // UpdateEmployeeResponse defines model for UpdateEmployeeResponse.
 type UpdateEmployeeResponse struct {
-	ID      int64  `json:"id"`
+	ID      uint64 `json:"id"`
 	Meta    Meta   `json:"meta"`
 	Name    string `json:"name"`
-	PhotoID int64  `json:"photo_id"`
+	PhotoID uint64 `json:"photo_id"`
 }
 
 // UploadImageResponse defines model for UploadImageResponse.
 type UploadImageResponse struct {
-	ID   int64  `json:"id"`
+	ID   uint64 `json:"id"`
 	Path string `json:"path"`
 }
 
@@ -226,59 +223,6 @@ type AddThirdpartyJSONRequestBody = AddThirdpartyJSONBody
 
 // AddTimerecordJSONRequestBody defines body for AddTimerecord for application/json ContentType.
 type AddTimerecordJSONRequestBody = AddTimerecordJSONBody
-
-// Getter for additional properties for Meta. Returns the specified
-// element and whether it was found
-func (a Meta) Get(fieldName string) (value interface{}, found bool) {
-	if a.AdditionalProperties != nil {
-		value, found = a.AdditionalProperties[fieldName]
-	}
-	return
-}
-
-// Setter for additional properties for Meta
-func (a *Meta) Set(fieldName string, value interface{}) {
-	if a.AdditionalProperties == nil {
-		a.AdditionalProperties = make(map[string]interface{})
-	}
-	a.AdditionalProperties[fieldName] = value
-}
-
-// Override default JSON handling for Meta to handle AdditionalProperties
-func (a *Meta) UnmarshalJSON(b []byte) error {
-	object := make(map[string]json.RawMessage)
-	err := json.Unmarshal(b, &object)
-	if err != nil {
-		return err
-	}
-
-	if len(object) != 0 {
-		a.AdditionalProperties = make(map[string]interface{})
-		for fieldName, fieldBuf := range object {
-			var fieldVal interface{}
-			err := json.Unmarshal(fieldBuf, &fieldVal)
-			if err != nil {
-				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
-			}
-			a.AdditionalProperties[fieldName] = fieldVal
-		}
-	}
-	return nil
-}
-
-// Override default JSON handling for Meta to handle AdditionalProperties
-func (a Meta) MarshalJSON() ([]byte, error) {
-	var err error
-	object := make(map[string]json.RawMessage)
-
-	for fieldName, field := range a.AdditionalProperties {
-		object[fieldName], err = json.Marshal(field)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
-		}
-	}
-	return json.Marshal(object)
-}
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
@@ -621,30 +565,30 @@ func RegisterHandlersWithOptions(router *gin.Engine, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

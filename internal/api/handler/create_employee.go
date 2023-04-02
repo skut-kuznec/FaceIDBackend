@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/smart48ru/FaceIDApp/internal/api/openapi"
+	"github.com/smart48ru/FaceIDApp/internal/domain"
 )
 
 // CreateEmployee implements openapi.ServerInterface
@@ -11,9 +14,24 @@ func (h *Handlers) CreateEmployee(c *gin.Context) {
 
 	err := c.BindJSON(&r)
 	if err != nil {
-		abortWithError(c, "error to parse empoyee request", err)
+		abortWithError(c, "error to parse employee request", err)
 		return
 	}
+	employee := domain.Employee{}
+	employee.Name = r.Name
+	employee.PhotoID = r.PhotoID
+	employee.Meta = r.Meta
 
-	// TODO: Вызвать логику, замапить ответ.
+	id, err := h.staffApp.AddEmployee(c, employee)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, openapi.Error{Error: err.Error()})
+		return
+	}
+	resp := openapi.CreateEmployeeResponse{}
+	resp.ID = id
+	resp.Name = r.Name
+	resp.PhotoID = r.PhotoID
+	resp.Meta = r.Meta
+
+	c.JSON(http.StatusOK, resp)
 }

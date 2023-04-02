@@ -35,7 +35,7 @@ func abortWithError(c *gin.Context, msgText string, err error) {
 	log.Error().Err(err).Msg(msgText)
 
 	ret := openapi.Error{
-		Error: &msgText,
+		Error: msgText,
 	}
 	c.AbortWithStatusJSON(http.StatusInternalServerError, ret)
 }
