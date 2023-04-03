@@ -14,7 +14,9 @@ func (h *Handlers) DeleteEmployee(c *gin.Context, params openapi.DeleteEmployeeP
 		c.JSON(http.StatusInternalServerError, openapi.Error{Error: err.Error()})
 		return
 	}
-	resp := openapi.DeleteEmployeeResponse{}
-	resp.Message = "success"
+	resp := openapi.DeleteEmployeeResponse{
+		Message: "success",
+	}
+
 	c.JSON(http.StatusOK, resp)
 }

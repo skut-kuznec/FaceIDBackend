@@ -17,10 +17,11 @@ func (h *Handlers) CreateEmployee(c *gin.Context) {
 		abortWithError(c, "error to parse employee request", err)
 		return
 	}
-	employee := domain.Employee{}
-	employee.Name = r.Name
-	employee.PhotoID = r.PhotoID
-	employee.Meta = r.Meta.AdditionalProperties
+	employee := domain.Employee{
+		Name:    r.Name,
+		PhotoID: r.PhotoID,
+		Meta:    r.Meta.AdditionalProperties,
+	}
 
 	id, err := h.staffApp.AddEmployee(c, employee)
 	if err != nil {

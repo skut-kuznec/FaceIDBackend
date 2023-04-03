@@ -15,22 +15,26 @@ func (h *Handlers) UpdateEmployee(c *gin.Context) {
 		abortWithError(c, "error to parse employee request", err)
 		return
 	}
-	employee := domain.Employee{}
-	employee.ID = r.ID
-	employee.Name = r.Name
-	employee.PhotoID = r.PhotoID
-	employee.Meta = r.Meta.AdditionalProperties
+	employee := domain.Employee{
+		ID:      r.ID,
+		Name:    r.Name,
+		PhotoID: r.PhotoID,
+		Meta:    r.Meta.AdditionalProperties,
+	}
 
 	updateEmployee, err := h.staffApp.UpdateEmployee(c, employee)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, openapi.Error{Error: err.Error()})
 		return
 	}
-	resp := openapi.UpdateEmployeeResponse{}
-	resp.ID = updateEmployee.ID
-	resp.Name = updateEmployee.Name
-	resp.PhotoID = updateEmployee.PhotoID
-	resp.Meta.AdditionalProperties = updateEmployee.Meta
+	resp := openapi.UpdateEmployeeResponse{
+		ID:      updateEmployee.ID,
+		Name:    updateEmployee.Name,
+		PhotoID: updateEmployee.PhotoID,
+		Meta: openapi.Meta{
+			AdditionalProperties: updateEmployee.Meta,
+		},
+	}
 
 	c.JSON(http.StatusOK, resp)
 }

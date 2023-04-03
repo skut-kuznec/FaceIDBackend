@@ -15,11 +15,17 @@ func (h *Handlers) ListEmployees(c *gin.Context) {
 		return
 	}
 	resp := make(openapi.ListEmployeesResponse, len(employees))
+
 	for i, employee := range employees {
-		resp[i].ID = employee.ID
-		resp[i].Name = employee.Name
-		resp[i].PhotoID = employee.PhotoID
-		resp[i].Meta.AdditionalProperties = employee.Meta
+		respEmployee := openapi.Employee{
+			ID:      employee.ID,
+			Name:    employee.Name,
+			PhotoID: employee.PhotoID,
+			Meta: openapi.Meta{
+				AdditionalProperties: employee.Meta,
+			},
+		}
+		resp[i] = respEmployee
 	}
 
 	c.JSON(http.StatusOK, resp)

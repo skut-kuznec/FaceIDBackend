@@ -14,11 +14,14 @@ func (h *Handlers) GetEmployee(c *gin.Context, params openapi.GetEmployeeParams)
 		c.JSON(http.StatusInternalServerError, openapi.Error{Error: err.Error()})
 		return
 	}
-	resp := openapi.GetEmployeeResponse{}
-	resp.ID = employee.ID
-	resp.Name = employee.Name
-	resp.PhotoID = employee.PhotoID
-	resp.Meta.AdditionalProperties = employee.Meta
+	resp := openapi.GetEmployeeResponse{
+		ID:      employee.ID,
+		Name:    employee.Name,
+		PhotoID: employee.PhotoID,
+		Meta: openapi.Meta{
+			AdditionalProperties: employee.Meta,
+		},
+	}
 
 	c.JSON(http.StatusOK, resp)
 }
