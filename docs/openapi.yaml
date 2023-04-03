@@ -382,6 +382,8 @@ components:
       additionalProperties: true
     Error:
       type: object
+      required:
+        - error
       properties:
         error:
           type: string
@@ -396,7 +398,7 @@ components:
           type: string
         photo_id:
           type: integer
-          format: int64
+          format: uint64
           x-go-name: PhotoID
         meta:
           $ref: "#/components/schemas/Meta"
@@ -409,7 +411,7 @@ components:
           properties:
             id:
               type: integer
-              format: int64
+              format: uint64
               x-go-name: ID
     Image:
       type: object
@@ -419,7 +421,7 @@ components:
       properties:
         id:
           type: integer
-          format: int64
+          format: uint64
           x-go-name: ID
         path:
           type: string
