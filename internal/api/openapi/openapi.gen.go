@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -117,7 +118,9 @@ type ListThirdpartyResponse = []string
 type ListTimerecordResponse = []Timerecord
 
 // Meta defines model for Meta.
-type Meta = map[string]interface{}
+type Meta struct {
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
 
 // RecognizeEmployeeResponse defines model for RecognizeEmployeeResponse.
 type RecognizeEmployeeResponse struct {
@@ -223,6 +226,59 @@ type AddThirdpartyJSONRequestBody = AddThirdpartyJSONBody
 
 // AddTimerecordJSONRequestBody defines body for AddTimerecord for application/json ContentType.
 type AddTimerecordJSONRequestBody = AddTimerecordJSONBody
+
+// Getter for additional properties for Meta. Returns the specified
+// element and whether it was found
+func (a Meta) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for Meta
+func (a *Meta) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for Meta to handle AdditionalProperties
+func (a *Meta) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for Meta to handle AdditionalProperties
+func (a Meta) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
@@ -573,22 +629,22 @@ var swaggerSpec = []string{
 	"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",
-	"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",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

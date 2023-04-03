@@ -18,7 +18,7 @@ func (h *Handlers) GetEmployee(c *gin.Context, params openapi.GetEmployeeParams)
 	resp.ID = employee.ID
 	resp.Name = employee.Name
 	resp.PhotoID = employee.PhotoID
-	resp.Meta = employee.Meta
+	resp.Meta.AdditionalProperties = employee.Meta
 
 	c.JSON(http.StatusOK, resp)
 }

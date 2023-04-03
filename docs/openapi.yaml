@@ -379,6 +379,7 @@ components:
   schemas:
     Meta: 
       type: object
+      additionalProperties: true
     Error:
       type: object
       required:

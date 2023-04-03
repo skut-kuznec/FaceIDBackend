@@ -20,7 +20,7 @@ func (h *Handlers) CreateEmployee(c *gin.Context) {
 	employee := domain.Employee{}
 	employee.Name = r.Name
 	employee.PhotoID = r.PhotoID
-	employee.Meta = r.Meta
+	employee.Meta = r.Meta.AdditionalProperties
 
 	id, err := h.staffApp.AddEmployee(c, employee)
 	if err != nil {

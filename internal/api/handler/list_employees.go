@@ -19,7 +19,7 @@ func (h *Handlers) ListEmployees(c *gin.Context) {
 		resp[i].ID = employee.ID
 		resp[i].Name = employee.Name
 		resp[i].PhotoID = employee.PhotoID
-		resp[i].Meta = employee.Meta
+		resp[i].Meta.AdditionalProperties = employee.Meta
 	}
 
 	c.JSON(http.StatusOK, resp)

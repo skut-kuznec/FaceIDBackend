@@ -19,7 +19,7 @@ func (h *Handlers) UpdateEmployee(c *gin.Context) {
 	employee.ID = r.ID
 	employee.Name = r.Name
 	employee.PhotoID = r.PhotoID
-	employee.Meta = r.Meta
+	employee.Meta = r.Meta.AdditionalProperties
 
 	updateEmployee, err := h.staffApp.UpdateEmployee(c, employee)
 	if err != nil {
@@ -30,7 +30,7 @@ func (h *Handlers) UpdateEmployee(c *gin.Context) {
 	resp.ID = updateEmployee.ID
 	resp.Name = updateEmployee.Name
 	resp.PhotoID = updateEmployee.PhotoID
-	resp.Meta = updateEmployee.Meta
+	resp.Meta.AdditionalProperties = updateEmployee.Meta
 
 	c.JSON(http.StatusOK, resp)
 }
