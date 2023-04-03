@@ -28,11 +28,12 @@ func (h *Handlers) CreateEmployee(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, openapi.Error{Error: err.Error()})
 		return
 	}
-	resp := openapi.CreateEmployeeResponse{}
-	resp.ID = id
-	resp.Name = r.Name
-	resp.PhotoID = r.PhotoID
-	resp.Meta = r.Meta
+	resp := openapi.CreateEmployeeResponse{
+		ID:      id,
+		Name:    r.Name,
+		PhotoID: r.PhotoID,
+		Meta:    r.Meta,
+	}
 
 	c.JSON(http.StatusOK, resp)
 }

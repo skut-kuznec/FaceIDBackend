@@ -27,17 +27,17 @@ type AddThirdpartyRequest struct {
 
 // AddTimerecordRequest defines model for AddTimerecordRequest.
 type AddTimerecordRequest struct {
-	Employee  int64           `json:"employee"`
+	Employee  uint64          `json:"employee"`
 	EntryTime TimerecordTime  `json:"entry_time"`
 	ExitTime  *TimerecordTime `json:"exit_time,omitempty"`
 }
 
 // AddTimerecordResponse defines model for AddTimerecordResponse.
 type AddTimerecordResponse struct {
-	Employee  int64           `json:"employee"`
+	Employee  uint64          `json:"employee"`
 	EntryTime TimerecordTime  `json:"entry_time"`
 	ExitTime  *TimerecordTime `json:"exit_time,omitempty"`
-	ID        int64           `json:"id"`
+	ID        uint64          `json:"id"`
 }
 
 // CreateEmployeeRequest defines model for CreateEmployeeRequest.
@@ -102,10 +102,10 @@ type Image struct {
 
 // LastTimerecordByEmploeeIDResponse defines model for LastTimerecordByEmploeeIDResponse.
 type LastTimerecordByEmploeeIDResponse struct {
-	Employee  int64           `json:"employee"`
+	Employee  uint64          `json:"employee"`
 	EntryTime TimerecordTime  `json:"entry_time"`
 	ExitTime  *TimerecordTime `json:"exit_time,omitempty"`
-	ID        int64           `json:"id"`
+	ID        uint64          `json:"id"`
 }
 
 // ListEmployeesResponse defines model for ListEmployeesResponse.
@@ -132,15 +132,15 @@ type RecognizeEmployeeResponse struct {
 
 // Timerecord defines model for Timerecord.
 type Timerecord struct {
-	Employee  int64           `json:"employee"`
+	Employee  uint64          `json:"employee"`
 	EntryTime TimerecordTime  `json:"entry_time"`
 	ExitTime  *TimerecordTime `json:"exit_time,omitempty"`
-	ID        int64           `json:"id"`
+	ID        uint64          `json:"id"`
 }
 
 // TimerecordBase defines model for TimerecordBase.
 type TimerecordBase struct {
-	Employee  int64           `json:"employee"`
+	Employee  uint64          `json:"employee"`
 	EntryTime TimerecordTime  `json:"entry_time"`
 	ExitTime  *TimerecordTime `json:"exit_time,omitempty"`
 }
@@ -622,29 +622,29 @@ func RegisterHandlersWithOptions(router *gin.Engine, si ServerInterface, options
 var swaggerSpec = []string{
 
 	"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",
-	"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",
+	"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",
-	"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",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

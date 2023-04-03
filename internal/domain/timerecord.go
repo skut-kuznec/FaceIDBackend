@@ -1,11 +1,13 @@
 package domain
 
-import (
-	"time"
-)
+import "time"
 
 type TimeRecord struct {
-	Employee   uint64
-	StartWork  time.Time
-	FinishWork time.Time
+	ID        uint64
+	Employee  uint64
+	EntryTime struct {
+		Time    time.Time
+		PhotoId uint64
+	}
+	ExitTime time.Time
 }
