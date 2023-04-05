@@ -25,7 +25,7 @@ func New() *Repo {
 }
 
 // Save implements staffservice.StaffRepo
-func (r *Repo) Save(ctx context.Context, u domain.Employee) (uint64, error) {
+func (r *Repo) Save(ctx context.Context, e domain.Employee) (uint64, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	select {
@@ -34,8 +34,8 @@ func (r *Repo) Save(ctx context.Context, u domain.Employee) (uint64, error) {
 	default:
 	}
 	r.seq += 1
-	u.ID = r.seq
-	r.m[r.seq] = u
+	e.ID = r.seq
+	r.m[r.seq] = e
 
 	return r.seq, nil
 }
