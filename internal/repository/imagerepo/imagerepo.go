@@ -27,6 +27,10 @@ func (re *Repo) GetDescByID(ctx context.Context, in uint64) (domain.Image, error
 }
 
 // Save implements imageapp.ImageRepo
-func (re *Repo) Save(ctx context.Context, r io.Reader) (domain.Image, error) {
+func (re *Repo) Save(ctx context.Context, img []byte, descr domain.FaceDescriptor) (domain.Image, error) {
+	panic("unimplemented")
+}
+
+func (re *Repo) List(ctx context.Context) ([]domain.Image, error) {
 	panic("unimplemented")
 }
