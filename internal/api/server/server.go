@@ -10,19 +10,11 @@ import (
 	"github.com/smart48ru/FaceIDApp/internal/config"
 )
 
-type ServerConfig interface {
-	APIHost() string
-	APIPort() int
-	APIReadTimeOut() time.Duration
-	APIWriteTimeOut() time.Duration
-	APIReadHeadTimeOut() time.Duration
-}
-
 type Server struct {
 	srv http.Server
 }
 
-func NewServer(conf *config.ConfigV2, h http.Handler) *Server {
+func NewServer(conf *config.Config, h http.Handler) *Server {
 	addr := fmt.Sprintf("%s:%d", conf.API.Host, conf.API.Port)
 
 	s := &Server{}

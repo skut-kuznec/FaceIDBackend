@@ -23,7 +23,7 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
 
-	cfg, err := config.NewConfigV2()
+	cfg, err := config.NewConfig()
 	if err != nil {
 		log.Fatal().Msgf("%s Loading config", err) //nolint: gocritic
 	}

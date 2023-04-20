@@ -53,14 +53,12 @@ func New(debug bool, si openapi.ServerInterface) *gin.Engine {
 		defer ws.Close()
 
 		for {
-
 			mt, message, err := ws.ReadMessage()
 			if err != nil {
 				log.Error().Err(err).Msg("error to read message from websocket")
 				break
 			}
 			log.Printf("recv: %s", message)
-
 
 			err = ws.WriteMessage(mt, message)
 			if err != nil {
