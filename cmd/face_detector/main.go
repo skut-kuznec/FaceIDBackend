@@ -1,22 +1,21 @@
 package main
 
 import (
+	"FaceIDApp/internal/api/handler"
+	"FaceIDApp/internal/api/router"
+	"FaceIDApp/internal/api/server"
+	"FaceIDApp/internal/app/imageapp"
+	"FaceIDApp/internal/app/staffapp"
+	"FaceIDApp/internal/app/timerecordapp"
+	"FaceIDApp/internal/config"
+	"FaceIDApp/internal/repository/imagerepo"
+	"FaceIDApp/internal/repository/staffrepo"
+	"FaceIDApp/internal/repository/timerecordrepo"
 	"context"
-	"os"
-	"os/signal"
-
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
-	"github.com/smart48ru/FaceIDApp/internal/api/handler"
-	"github.com/smart48ru/FaceIDApp/internal/api/router"
-	"github.com/smart48ru/FaceIDApp/internal/api/server"
-	"github.com/smart48ru/FaceIDApp/internal/app/imageapp"
-	"github.com/smart48ru/FaceIDApp/internal/app/staffapp"
-	"github.com/smart48ru/FaceIDApp/internal/app/timerecordapp"
-	"github.com/smart48ru/FaceIDApp/internal/config"
-	"github.com/smart48ru/FaceIDApp/internal/repository/imagerepo"
-	"github.com/smart48ru/FaceIDApp/internal/repository/staffrepo"
-	"github.com/smart48ru/FaceIDApp/internal/repository/timerecordrepo"
+	"os"
+	"os/signal"
 )
 
 func main() {
