@@ -7,31 +7,23 @@ import (
 	"time"
 
 	"github.com/rs/zerolog/log"
+	"github.com/smart48ru/FaceIDApp/internal/config"
 )
-
-type ServerConfig interface {
-	APIHost() string
-	APIPort() int
-	APIReadTimeOut() time.Duration
-	APIWriteTimeOut() time.Duration
-	APIReadHeadTimeOut() time.Duration
-}
 
 type Server struct {
 	srv http.Server
 }
 
-func NewServer(conf ServerConfig, h http.Handler) *Server {
-	addr := fmt.Sprintf("%s:%d", conf.APIHost(), conf.APIPort())
+func NewServer(conf *config.Config, h http.Handler) *Server {
+	addr := fmt.Sprintf("%s:%d", conf.API.Host, conf.API.Port)
 
 	s := &Server{}
 
 	s.srv = http.Server{
-		Addr:              addr,
-		Handler:           h,
-		ReadTimeout:       conf.APIReadTimeOut(),
-		WriteTimeout:      conf.APIWriteTimeOut(),
-		ReadHeaderTimeout: conf.APIReadHeadTimeOut(),
+		Addr:         addr,
+		Handler:      h,
+		ReadTimeout:  conf.API.ReadTimeout,
+		WriteTimeout: conf.API.WriteTimeout,
 	}
 	return s
 }

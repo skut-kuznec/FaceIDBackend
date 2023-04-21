@@ -5,11 +5,11 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 	"github.com/smart48ru/FaceIDApp/internal/api/handler"
 	"github.com/smart48ru/FaceIDApp/internal/api/router"
 	"github.com/smart48ru/FaceIDApp/internal/api/server"
+	"github.com/smart48ru/FaceIDApp/internal/app/faceapp"
 	"github.com/smart48ru/FaceIDApp/internal/app/imageapp"
 	"github.com/smart48ru/FaceIDApp/internal/app/staffapp"
 	"github.com/smart48ru/FaceIDApp/internal/app/timerecordapp"
@@ -35,18 +35,16 @@ func main() {
 
 	// Initializing application logic.
 	staffApp := staffapp.New(staffRepo)
-	imageApp := imageapp.New(imageRepo)
+	faceApp := faceapp.New(cfg.Image.ModelDir)
+	imageApp := imageapp.New(imageRepo, faceApp)
+
 	timeRecordApp := timerecordapp.New(timeRecordRepo)
 
 	hn := handler.New(imageApp, staffApp, timeRecordApp)
 
-	if cfg.APIRRelease() {
-		gin.SetMode(gin.ReleaseMode)
-	}
+	rt := router.New(cfg.Debug, hn)
 
-	rt := router.New(cfg.APIRRelease(), hn)
-
-	log.Info().Msgf("Running server on http://0.0.0.0:%d", cfg.API.APIPort())
+	log.Info().Msgf("Running server on http://%s:%d", cfg.API.Host, cfg.API.Port)
 	serv := server.NewServer(cfg, rt)
 
 	select {

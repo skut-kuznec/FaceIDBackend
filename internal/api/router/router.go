@@ -12,8 +12,8 @@ import (
 	"github.com/smart48ru/FaceIDApp/internal/api/openapi"
 )
 
-func New(release bool, si openapi.ServerInterface) *gin.Engine {
-	if release {
+func New(debug bool, si openapi.ServerInterface) *gin.Engine {
+	if !debug {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
@@ -51,8 +51,8 @@ func New(release bool, si openapi.ServerInterface) *gin.Engine {
 			return
 		}
 		defer ws.Close()
+
 		for {
-			//read data from ws
 			mt, message, err := ws.ReadMessage()
 			if err != nil {
 				log.Error().Err(err).Msg("error to read message from websocket")
@@ -60,7 +60,6 @@ func New(release bool, si openapi.ServerInterface) *gin.Engine {
 			}
 			log.Printf("recv: %s", message)
 
-			//write ws data
 			err = ws.WriteMessage(mt, message)
 			if err != nil {
 				log.Error().Err(err).Msg("error to read message from websocket")

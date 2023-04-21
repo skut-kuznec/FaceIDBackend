@@ -1,15 +1,12 @@
 api:
   host: "0.0.0.0"
   port: 8080
-  program_key: "ProgAuthDevKey"
-  read_time_out: 40s
-  write_time_out: 20s
-  read_head_time_out: 50s
-  release: false
-  admin_key: secret-admin-key
-log:
-  level: "debug"
-  to_file: false
-  filename: "log/epg.log"
+  read_timeout: 40s
+  write_timeout: 20s
+  read_head_timeout: 50s
+  secret_key: secret-admin-key
+log_level: "debug"
+debug: true
 image:
-  upload_dir: "upl"
+  upload_dir: "./upload"
+  model_dir: "./models"
