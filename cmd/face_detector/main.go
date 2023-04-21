@@ -1,57 +1,67 @@
 package main
 
 import (
+	"FaceIDApp/internal/config"
+	"FaceIDApp/internal/infrastructure/api/handler"
+	"FaceIDApp/internal/infrastructure/api/routergin"
+	"FaceIDApp/internal/infrastructure/api/server"
+	"FaceIDApp/internal/infrastructure/store/db"
+	"FaceIDApp/internal/infrastructure/store/filestore"
+	"FaceIDApp/internal/infrastructure/store/memstore"
+	"FaceIDApp/internal/service"
+	"FaceIDApp/internal/usecases/app/repos/imagerepo"
+	"FaceIDApp/internal/usecases/app/repos/stuffrepo"
+	"FaceIDApp/internal/usecases/app/repos/timerecordrepo"
 	"context"
 	"os"
 	"os/signal"
 
 	"github.com/rs/zerolog/log"
-	"github.com/smart48ru/FaceIDApp/internal/api/handler"
-	"github.com/smart48ru/FaceIDApp/internal/api/router"
-	"github.com/smart48ru/FaceIDApp/internal/api/server"
-	"github.com/smart48ru/FaceIDApp/internal/app/faceapp"
-	"github.com/smart48ru/FaceIDApp/internal/app/imageapp"
-	"github.com/smart48ru/FaceIDApp/internal/app/staffapp"
-	"github.com/smart48ru/FaceIDApp/internal/app/timerecordapp"
-	"github.com/smart48ru/FaceIDApp/internal/config"
-	"github.com/smart48ru/FaceIDApp/internal/repository/imagerepo"
-	"github.com/smart48ru/FaceIDApp/internal/repository/staffrepo"
-	"github.com/smart48ru/FaceIDApp/internal/repository/timerecordrepo"
 )
+
+var uStore stuffrepo.StuffStore
+
+var cStore timerecordrepo.TimeRecordStorage
 
 func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
-	defer cancel()
-
 	cfg, err := config.NewConfig()
 	if err != nil {
-		log.Fatal().Msgf("%s Loading config", err) //nolint: gocritic
+		log.Fatal().Msgf("%s Loading config", err)
+	}
+	// Create store
+	switch cfg.DBEnable() {
+	case true:
+		dbCon, err := db.NewPostgres(cfg.DBConfig())
+		if err != nil {
+			log.Fatal().Msgf("not connect to DB | %s", err)
+		}
+		uStore = db.NewUSerStore(dbCon)
+		cStore = db.NewTimeRecordStore(dbCon)
+	case false:
+		uStore = memstore.NewUseStore()
+		cStore = memstore.NewCalendarStore()
 	}
 
-	// Initializing repositories.
-	staffRepo := staffrepo.New()
-	imageRepo := imagerepo.New()
-	timeRecordRepo := timerecordrepo.New()
-
-	// Initializing application logic.
-	staffApp := staffapp.New(staffRepo)
-	faceApp := faceapp.New(cfg.Image.ModelDir)
-	imageApp := imageapp.New(imageRepo, faceApp)
-
-	timeRecordApp := timerecordapp.New(timeRecordRepo)
-
-	hn := handler.New(imageApp, staffApp, timeRecordApp)
-
-	rt := router.New(cfg.Debug, hn)
-
-	log.Info().Msgf("Running server on http://%s:%d", cfg.API.Host, cfg.API.Port)
-	serv := server.NewServer(cfg, rt)
-
-	select {
-	case err := <-serv.Start():
-		log.Fatal().Err(err).Msg("error to start server")
-	case <-ctx.Done():
-		log.Info().Msg("Stopping server")
-		serv.Stop()
-	}
+	fileStore := filestore.NewPhotoStore(cfg.FileUploadDir())
+	// Create repo
+	fileRepo := imagerepo.NewPhotoRepo(fileStore)
+	calendarRepo := timerecordrepo.NewCalendarRepo(cStore)
+	userRepo := stuffrepo.NewUsersRepo(uStore)
+	// create service from management repository
+	serviceApp := service.NewService(userRepo, calendarRepo, fileRepo)
+	// Create handler
+	userHandlers := handler.NewHandler(serviceApp)
+	// Create router
+	router := routergin.NewRouterGin(userHandlers, cfg.APIConfig())
+	// Create & start http server
+	serv := server.NewServer(cfg.APIConfig(), router)
+	serv.Start()
+	log.Info().Msg("Program Start")
+	// wait graceful shutdown
+	<-ctx.Done()
+	log.Info().Msg("Program Stop")
+	// stop http server
+	serv.Stop()
+	cancel()
 }
