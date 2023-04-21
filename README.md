@@ -40,4 +40,5 @@ make
 make help
 ```
 
-[![codecov](https://codecov.io/gh/skut-kuznec/FaceIDBackend/branch/main/graph/badge.svg?token=0QBDIQB1YN)](https://codecov.io/gh/skut-kuznec/FaceIDBackend)
+[![codecov](https://codecov.io/gh/smart48ru/FaceIDApp/branch/main/graph/badge.svg?token=0QBDIQB1YN)](https://codecov.io/gh/smart48ru/FaceIDApp)
+
