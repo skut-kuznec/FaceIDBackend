@@ -12,20 +12,18 @@
 Конфигурационный файл ищется по пути `$./cfg/config.yaml`. Пример конфига:
 
 ```yaml
----
-r:
-  host: "127.0.0.1"
+api:
+  host: "0.0.0.0"
   port: 8080
-  program_key: "ProgAuthKey"
-  read_time_out: 40
-  write_time_out: 20
-  read_head_time_out: 50
-log:
-  level: "debug"
-  to_file: false
-  filename: "log/epg.log"
-files:
-  upload_dir: "upl"
+  read_timeout: 40s
+  write_timeout: 20s
+  read_head_timeout: 50s
+  secret_key: secret-admin-key
+log_level: "debug"
+debug: true
+image:
+  upload_dir: "./upload"
+  model_dir: "./models"
 ```
 
 Run application:
